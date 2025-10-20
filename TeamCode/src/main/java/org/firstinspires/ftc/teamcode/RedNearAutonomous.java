@@ -17,26 +17,26 @@ public class RedNearAutonomous extends LinearOpMode {
     public DcMotor shooter; //Shooting Motor
     public Servo trigger; //The thing that launches the ball into the shooting system
     public DcMotor intake; //The intake
-    public DcMotor transferSystem; //The motors in the chamber
+    public DcMotor topshooter; //The motors in the chamber
     private int leftFrontPos;
     private int rightFrontPos;
     private int leftBackPos;
     private int rightBackPos;
     private int shooterPos;
     private int intakePos;
-    private int transferPos;
+    private int topShooterPos;
 
     @Override
     public void runOpMode() {
         //DEFINING HARDWARE MAP ***
-        frontleft = hardwareMap.get(DcMotor.class, "front left");
-        frontright = hardwareMap.get(DcMotor.class, "front right");
-        backleft = hardwareMap.get(DcMotor.class, "back left");
-        backright = hardwareMap.get(DcMotor.class, "back right");
-        trigger = hardwareMap.get(Servo.class, "shooter left");
+        frontleft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontright = hardwareMap.get(DcMotor.class, "frontRight");
+        backleft = hardwareMap.get(DcMotor.class, "backLeft");
+        backright = hardwareMap.get(DcMotor.class, "backRight");
+        trigger = hardwareMap.get(Servo.class, "shooter kicker");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
-        transferSystem = hardwareMap.get(DcMotor.class, "transfer");
+        shooter = hardwareMap.get(DcMotor.class, "shooter bottom");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter top");
 
         //RESTARTING ENCODERS
         frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,7 +46,7 @@ public class RedNearAutonomous extends LinearOpMode {
         //trigger.setMode(Servo.RunMode.STOP_AND_RESET_ENCODER);
         intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        transferSystem.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        topshooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //SETTING MOTOR DIRECTIONS
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -59,19 +59,22 @@ public class RedNearAutonomous extends LinearOpMode {
         rightBackPos = 0;
         shooterPos = 0;
         intakePos = 0;
-        transferPos = 0;
+        topShooterPos = 0;
 
         //THE AUTO ITSELF
         waitForStart();
 
         drive(1000,1000,1000,1000,0.5);
+        telemetry.addLine("Driving Forward"); //"Printing" to the driver hub
         drive(-1000,-1000,1000,1000,0.5);
+        telemetry.addLine("Turning"); //"Printing" to the driver hub
         shoot(1000, 0.6, true);
         resetTrigger();
         shoot(1000, 0.6, true);
         resetTrigger();
         shoot(1000, 0.6, true);
         resetTrigger();
+        telemetry.addLine("Shot 3 times"); //"Printing" to the driver hub
         telemetry.addLine("Auto Finished"); //"Printing" to the driver hub
 
         /*
@@ -80,7 +83,7 @@ public class RedNearAutonomous extends LinearOpMode {
         drive(1000,1000,-1000,-1000,0.1);       //Turns some direction
         drive(-1000,1000,1000,-1000,0.1);       //Strafes some direction
         shoot(1000, 0.66, false);               //Intakes/Transfers Balls
-        shoot(1000, 0.66, false);               //Shoots 1 Ball
+        shoot(1000, 0.66, true);               //Shoots 1 Ball
         resetTrigger();                         //Resets the trigger position
         */
     }
@@ -114,25 +117,25 @@ public class RedNearAutonomous extends LinearOpMode {
     private void shoot(int shootTarget, double speed, boolean shoot) {
         shooterPos += shootTarget;
         intakePos += shootTarget;
-        transferPos += shootTarget;
+        topShooterPos += shootTarget;
 
         shooter.setTargetPosition(shooterPos);
         intake.setTargetPosition(intakePos);
-        transferSystem.setTargetPosition(transferPos);
+        topshooter.setTargetPosition(topShooterPos);
 
         shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        transferSystem.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        topshooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         shooter.setPower(speed);
         intake.setPower(speed);
-        transferSystem.setPower(speed);
+        topshooter.setPower(speed);
 
         if (shoot){
             trigger.setPosition(0.2);
         }
 
-        while(opModeIsActive() && shooter.isBusy() && intake.isBusy() && transferSystem.isBusy()){
+        while(opModeIsActive() && shooter.isBusy() && intake.isBusy() && topshooter.isBusy()){
             idle();
         }
     }
