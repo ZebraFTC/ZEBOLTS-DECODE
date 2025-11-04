@@ -41,30 +41,47 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             double turn = gamepad1.right_stick_x;
             double strafe = gamepad1.left_stick_x;
 
-            frontleft.setPower(-(drive-turn-strafe)); //Pos for strafe
-            frontright.setPower((-drive-turn-strafe)); //Neg for strafe
-            backleft.setPower(-(drive-turn+strafe)); //Neg for strafe
-            backright.setPower(-(drive+turn-strafe)); //Pos for strafe
+
+
+
+            if (gamepad1.right_bumper) {
+                frontleft.setPower(-(drive-turn-strafe) * 0.5); //Pos for strafe
+                frontright.setPower((-drive-turn-strafe) * 0.5); //Neg for strafe
+                backleft.setPower(-(drive-turn+strafe) * 0.5); //Neg for strafe
+                backright.setPower(-(drive+turn-strafe) * 0.5); //Pos for strafe
+            }
+            else {
+                frontleft.setPower(-(drive-turn-strafe)); //Pos for strafe
+                frontright.setPower((-drive-turn-strafe)); //Neg for strafe
+                backleft.setPower(-(drive-turn+strafe)); //Neg for strafe
+                backright.setPower(-(drive+turn-strafe)); //Pos for strafe
+            }
+
+
+
+
+
 
             //TRIGGER INTO BALL LAUNCHER ***
             if (gamepad1.a) {
-                trigger.setPower(-1); //IDK VALUE (Launch Position)
-            }
-            if (gamepad1.b) {
+                trigger.setPower(-0.75); //IDK VALUE (Launch Position)
+            } else if (gamepad1.b) {
+                trigger.setPower(0.75); //IDK VALUE (Launch Position)
+            } else {
                 trigger.setPower(0); //IDK VALUE (Launch Position)
             }
 
             //ACTUAL BALL LAUNCHER
             if(gamepad2.dpad_up){
-                topshooter.setPower(-0.6); //Original Power
-                bottomshooter.setPower(-0.6); //Original Power
+                topshooter.setPower(-0.59); //Original Power
+                bottomshooter.setPower(-0.59); //Original Power
             } else if(gamepad2.dpad_left){
-                topshooter.setPower(-0.8); //Sniping Power
-                bottomshooter.setPower(-0.8); //Original Power
+                topshooter.setPower(-0.95); //Sniping Power
+                bottomshooter.setPower(-0.95); //Original Power
             } else if(gamepad2.dpad_right){
-                topshooter.setPower(-0.66); //Sniping Power
-                bottomshooter.setPower(-0.66); //Original Power
-            } else if(gamepad2.dpad_down){
+                topshooter.setPower(-0.51); //Sniping Power
+                bottomshooter.setPower(-0.51); //Original Power
+            } else if(gamepad2.dpad_down    ){
                 topshooter.setPower(0); //Stopping Power
                 bottomshooter.setPower(0); //Original Power
             }
