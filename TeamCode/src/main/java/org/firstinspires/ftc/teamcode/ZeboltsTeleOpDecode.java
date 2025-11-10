@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 @TeleOp
 public class ZeboltsTeleOpDecode extends LinearOpMode {
     //DEFINING MOTORS ***
@@ -18,28 +19,35 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     public DcMotor intake; //The intake
     public DcMotor transferSystem; //The motors in the chamber
 
+
     @Override
     public void runOpMode() throws InterruptedException {
-            //DEFINING HARDWARE MAP ***
-            frontleft = hardwareMap.get(DcMotor.class,"front left");
-            frontright = hardwareMap.get(DcMotor.class,"front right");
-            backleft = hardwareMap.get(DcMotor.class,"back left");
-            backright = hardwareMap.get(DcMotor.class,"back right");
-            trigger = hardwareMap.get(DcMotor.class,"transfer");
-            intake = hardwareMap.get(DcMotor.class, "intake");
-            bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
-            topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        //DEFINING HARDWARE MAP ***
+        frontleft = hardwareMap.get(DcMotor.class,"front left");
+        frontright = hardwareMap.get(DcMotor.class,"front right");
+        backleft = hardwareMap.get(DcMotor.class,"back left");
+        backright = hardwareMap.get(DcMotor.class,"back right");
+        trigger = hardwareMap.get(DcMotor.class,"transfer");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+
 
         //DEFINING MOTOR DIRECTION***
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
 
+
         while (opModeIsActive()){
             //DRIVING ***
             double drive = gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
             double strafe = gamepad1.left_stick_x;
+
+
+
+
 
 
 
@@ -62,6 +70,12 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
 
 
 
+
+
+
+
+
+
             //TRIGGER INTO BALL LAUNCHER ***
             if (gamepad1.a) {
                 trigger.setPower(-0.75); //IDK VALUE (Launch Position)
@@ -70,6 +84,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             } else {
                 trigger.setPower(0); //IDK VALUE (Launch Position)
             }
+
 
             //ACTUAL BALL LAUNCHER
             if(gamepad2.dpad_up){
@@ -86,7 +101,9 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
                 bottomshooter.setPower(0); //Original Power
             }
 
+
             //INTAKE***
+
 
             if(gamepad2.right_trigger > 0.1){
                 intake.setPower(-1);
@@ -94,23 +111,25 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
                 intake.setPower(0);
             }
 
+
             if(gamepad2.left_trigger > 0.1){
                 intake.setPower(1);
             } else if(gamepad2.left_bumper){
                 intake.setPower(0);
             }
 
-            /* if(gamepad2.left_trigger > 0.01){
-                intake.setPower(1);
-                transferSystem.setPower(1);
 
-            } else if (gamepad2.right_trigger > 0.01){
-                intake.setPower(-1);
-                transferSystem.setPower(-1);
-            } else{
-                intake.setPower(0);
-                transferSystem.setPower(0);*/
-            }
+           /* if(gamepad2.left_trigger > 0.01){
+               intake.setPower(1);
+               transferSystem.setPower(1);
+
+
+           } else if (gamepad2.right_trigger > 0.01){
+               intake.setPower(-1);
+               transferSystem.setPower(-1);
+           } else{
+               intake.setPower(0);
+               transferSystem.setPower(0);*/
         }
     }
-
+}
