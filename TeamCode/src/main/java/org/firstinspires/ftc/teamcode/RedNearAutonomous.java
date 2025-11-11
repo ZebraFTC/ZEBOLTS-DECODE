@@ -74,7 +74,7 @@ public class RedNearAutonomous extends LinearOpMode {
         telemetry.addLine("Driving Backward"); //"Printing" to the driver hub
         // bottomshooter.setPower(0.25);
         // topshooter.setPower(-0.25);
-        shoot(100, 0.25, true);
+        shoot(100, 0.25);
         /*
         --TEMPLATES--`w-[
         drive(1000,1000,1000,1000,0.25);        //Drives
