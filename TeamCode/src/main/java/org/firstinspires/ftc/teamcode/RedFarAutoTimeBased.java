@@ -51,7 +51,14 @@ public class RedFarAutoTimeBased extends LinearOpMode {
         //THE AUTO ITSELF
         waitForStart();
         shootClose();
-        driveWhileSpinUp(0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 0);
+        driveWhileSpinUp(0.65, 0.5, 0.5, 0.5, 0.5, 0.15, 0, 0);
+        driveWhileSpinUp(0.38, -0.5, 0.5, -0.5, 0.5, 0.15, 0, 0);
+        driveWhileSpinUp(1, 0.5, 0.5, 0.5, 0.5, 0, -1, 0.25);
+        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
+        driveWhileSpinUp(0.23, 0.5, -0.5, 0.5, -0.5, 0, 0, 0);
+        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
+        shootClose();
+
     }
 
     //DRIVE FUNCTION
@@ -77,8 +84,8 @@ public class RedFarAutoTimeBased extends LinearOpMode {
 
     private void shootClose() {
         timer.reset();
-        bottomshooter.setPower(-0.9);
-        topshooter.setPower(-0.9);
+        bottomshooter.setPower(-0.8);
+        topshooter.setPower(-0.8);
         long startTime = System.currentTimeMillis();
         long waitDuration = 3500; // Wait for 3.5 seconds
         long elapsedTime = 0;
@@ -92,8 +99,8 @@ public class RedFarAutoTimeBased extends LinearOpMode {
             }
         }
         while (opModeIsActive() && timer.seconds() < 6.5) {
-            intake.setPower(-0.75);
-            trigger.setPower(0.75);
+            intake.setPower(-0.5);
+            trigger.setPower(0.5);
         }
         intake.setPower(0);
         trigger.setPower(0);
