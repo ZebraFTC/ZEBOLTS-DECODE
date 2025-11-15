@@ -96,9 +96,12 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             } else if(gamepad2.dpad_right){
                 topshooter.setPower(-0.51); //Sniping Power
                 bottomshooter.setPower(-0.51); //Original Power
-            } else if(gamepad2.dpad_down    ){
+            } else if(gamepad2.dpad_down    ) {
                 topshooter.setPower(0); //Stopping Power
                 bottomshooter.setPower(0); //Original Power
+            }    else if(gamepad2.x){
+                    topshooter.setPower(0.2); //Stopping Power
+                    bottomshooter.setPower(0.2); //Original Power
             }
 
 

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
-public class BlueNearAutonomousTimeBAsed extends LinearOpMode {
+public class BlueFarAutoTimeBased extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -50,16 +50,8 @@ public class BlueNearAutonomousTimeBAsed extends LinearOpMode {
 
         //THE AUTO ITSELF
         waitForStart();
-        driveWhileSpinUp(0.5, -0.5, -0.5, -0.5, -0.5, -0.47, 0, 0); //drives back at beginning
         shootClose();
-        driveWhileSpinUp(0.21, -0.5, 0.5, -0.5, 0.5, 0.15, 0, 0); //turns after shooting three balls
-        driveWhileSpinUp(0.7, -0.5, 0.5, 0.5, -0.5, 0.15, 0, 0);//straifs to other 3 balls
-        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0.15, -1, 0.25); //intake next three balls
-        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, 0.15, -1, 0.25); //go back after getting three balls
-        driveWhileSpinUp(0.24, 0.5, -0.5, 0.5, -0.5, -0.5, 0, 0); //turns after picking  up three balls
-        driveWhileSpinUp(0.76, 0.5, -0.5, -0.5, 0.5, -0.5, 0, 0); //straif after turn with three balls
-        shootClose();
-        driveWhileSpinUp(0.7, -0.5, 0.5, 0.5, -0.5, 0, 0, 0);
+        driveWhileSpinUp(0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 0);
     }
 
     //DRIVE FUNCTION
@@ -85,8 +77,10 @@ public class BlueNearAutonomousTimeBAsed extends LinearOpMode {
 
     private void shootClose() {
         timer.reset();
+        bottomshooter.setPower(-0.9);
+        topshooter.setPower(-0.9);
         long startTime = System.currentTimeMillis();
-        long waitDuration = 2500; // Wait for 2 seconds
+        long waitDuration = 3500; // Wait for 2 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;
@@ -115,4 +109,3 @@ public class BlueNearAutonomousTimeBAsed extends LinearOpMode {
         }
     }
 }
-
