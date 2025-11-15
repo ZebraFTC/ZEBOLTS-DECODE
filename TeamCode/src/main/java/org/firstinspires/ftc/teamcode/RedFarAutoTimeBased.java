@@ -52,10 +52,10 @@ public class RedFarAutoTimeBased extends LinearOpMode {
         waitForStart();
         shootClose();
         driveWhileSpinUp(0.65, 0.5, 0.5, 0.5, 0.5, 0.15, 0, 0);
-        driveWhileSpinUp(0.38, -0.5, 0.5, -0.5, 0.5, 0.15, 0, 0);
+        driveWhileSpinUp(0.38, 0.5, -0.5, 0.5, -0.5, 0.15, 0, 0);
         driveWhileSpinUp(1, 0.5, 0.5, 0.5, 0.5, 0, -1, 0.25);
         driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
-        driveWhileSpinUp(0.23, 0.5, -0.5, 0.5, -0.5, 0, 0, 0);
+        driveWhileSpinUp(0.23, -0.5, 0.5, -0.5, 0.5, 0, 0, 0);
         driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
         shootClose();
 
