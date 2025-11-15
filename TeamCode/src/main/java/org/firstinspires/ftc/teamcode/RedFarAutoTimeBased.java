@@ -80,7 +80,7 @@ public class RedFarAutoTimeBased extends LinearOpMode {
         bottomshooter.setPower(-0.9);
         topshooter.setPower(-0.9);
         long startTime = System.currentTimeMillis();
-        long waitDuration = 3500; // Wait for 2 seconds
+        long waitDuration = 3500; // Wait for 3.5 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;
