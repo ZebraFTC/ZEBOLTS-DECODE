@@ -52,15 +52,20 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         waitForStart();
         driveWhileSpinUp(0.5, -0.5, -0.5, -0.5, -0.5, -0.47, 0, 0); //drives back at beginning
         shootClose();
-        driveWhileSpinUp(0.21, 0.5, -0.5, 0.5, -0.5, 0.15, 0, 0); //turns after shooting three balls
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0.15, 0, 0);//straifs to other 3 balls
-        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0.15, -1, 0.25); //intake next three balls
-        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, -0.5, 0, 0); //go back after getting three balls
+        driveWhileSpinUp(0.23 , 0.5, -0.5, 0.5, -0.5, 0.15, 0, 0); //turns after shooting three balls
+        driveWhileSpinUp(0.75, 0.5, -0.5, -0.5, 0.5, 0.15, 0, 0);//straifs to other 3 balls
+        driveWhileSpinUp(2.2, 0.25, 0.25, 0.25, 0.25, 0.15, -1, 0.25); //intake next three balls
+        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, 0,-1, 0); //go back after getting three balls
         driveWhileSpinUp(0.15, -0.5, 0.5, -0.5, 0.5, 0, 0, 0); //turns after picking  up three balls
-        driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0, 0, 0); //straif after turn with three balls
-        driveWhileSpinUp(0.5, 0, 0, 0, 0, -0.47, 0, 0);
+        driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, -0.47, 0, 0); //straif after turn with three balls
         shootClose();
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0, 0);
+        driveWhileSpinUp(0.23, 0.5, -0.5, 0.5, -0.5, 0, 0, 0);
+        driveWhileSpinUp(1.32, 0.5, -0.5, -0.5, 0.5, 0, 0, 0);
+        driveWhileSpinUp(2.45, 0.5, 0.5, 0.5, 0.5, 0, -1, 0.25);
+        driveWhileSpinUp(0.75, -0.5, -0.5, -0.5, -0.5, -0.47, -1, 0);
+        driveWhileSpinUp(1.62, -0.5, 0.5, 0.5, -0.5, -0.47, 0, 0);
+        driveWhileSpinUp(0.1, -0.5, 0.5, -0.5, 0.5, -0.47, 0, 0);
+        shootClose();
     }
 
     //DRIVE FUNCTION
@@ -87,7 +92,7 @@ public class RedNearAutoTimeBased extends LinearOpMode {
     private void shootClose() {
         timer.reset();
         long startTime = System.currentTimeMillis();
-        long waitDuration = 2500; // Wait for 2 seconds
+        long waitDuration = 3000; // Wait for 2 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;

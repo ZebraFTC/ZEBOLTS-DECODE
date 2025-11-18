@@ -49,7 +49,7 @@ public class RedNearAutonomous extends LinearOpMode {
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //trigger.setMode(Servo.RunMode.STOP_AND_RESET_ENCODER);
+        trigger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bottomshooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topshooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -70,11 +70,10 @@ public class RedNearAutonomous extends LinearOpMode {
         //THE AUTO ITSELF
         waitForStart();
 
-        drive(-500, -500, -500, -500, 0.5);
-        telemetry.addLine("Driving Backward"); //"Printing" to the driver hub
-        // bottomshooter.setPower(0.25);
-        // topshooter.setPower(-0.25);
-        shoot(100, 0.25);
+        drive(-800, -800, -800, -800, 0.5);
+        shootClose(-0.47, 0, 0, 4);
+
+
         /*
         --TEMPLATES--`w-[
         drive(1000,1000,1000,1000,0.25);        //Drives
@@ -112,29 +111,12 @@ public class RedNearAutonomous extends LinearOpMode {
         }
     }
 
-    private void shoot(int shootTarget, double speed) {
-
-        intakePos -= shootTarget;
-        triggerPos += shootTarget;
-        shooterPos -= shootTarget;
-
-        intake.setTargetPosition(intakePos);
-        trigger.setTargetPosition(triggerPos);
-        bottomshooter.setTargetPosition(shooterPos);
-        topshooter.setTargetPosition(shooterPos);
-
-        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        trigger.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        bottomshooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        topshooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        intake.setPower(0.5);
-        trigger.setPower(1);
-        bottomshooter.setPower(speed);
-        topshooter.setPower(-speed);
-
-        /*long startTime = System.currentTimeMillis();
-        long waitDuration = 3000; // Wait for 3 seconds
+    private void shootClose(double shooterSpeed, double intakeSpeed, double triggerSpeed, double runTime) {
+        timer.reset();
+        bottomshooter.setPower(shooterSpeed);
+        topshooter.setPower(shooterSpeed);
+        long startTime = System.currentTimeMillis();
+        long waitDuration = 2000; // Wait for 3 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;
@@ -144,10 +126,17 @@ public class RedNearAutonomous extends LinearOpMode {
                 Thread.currentThread().interrupt();
                 break;
             }
-        }*/
-
-        while (opModeIsActive() && bottomshooter.isBusy() && intake.isBusy() && topshooter.isBusy() && trigger.isBusy()) {
-            idle();
         }
+        while (opModeIsActive() && timer.seconds() < runTime) {
+            intake.setPower(intakeSpeed);
+            trigger.setPower(triggerSpeed);
+        }
+        intake.setPower(0);
+        trigger.setPower(0);
+        bottomshooter.setPower(0);
+        topshooter.setPower(0);
     }
+
 }
+
+
