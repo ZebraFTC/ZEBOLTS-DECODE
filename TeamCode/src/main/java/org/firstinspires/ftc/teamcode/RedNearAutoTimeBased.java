@@ -60,7 +60,10 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0, 0, 0); //straif after turn with three balls
         driveWhileSpinUp(0.5, 0, 0, 0, 0, -0.47, 0, 0);
         shootClose();
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0, 0);
+        //driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0, 0);
+        driveWhileSpinUp(0.21, 0.5, -0.5, 0.5, -0.5, 0.15, 0, 0); //turns after shooting three balls
+        driveWhileSpinUp(1.7 , 0.5, -0.5, -0.5, 0.5, 0.15, 0, 0);//straifs to other 3 balls
+        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0.15, -1, 0.25); //intake next three balls
     }
 
     //DRIVE FUNCTION
