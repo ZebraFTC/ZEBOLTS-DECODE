@@ -15,9 +15,10 @@ public class ZeboltzTeleTurret extends LinearOpMode {
     public DcMotor backright; //Wheel
     public DcMotor topshooter; //Shooting Motor
     public DcMotor bottomshooter; //Shooting Motor
-    public DcMotor trigger; //The thing that launches the ball into the shooting system
+    public Servo trigger; //The thing that launches the ball into the shooting system
     public DcMotor intake; //The intake
-    public DcMotor transferSystem; //The motors in the chamber
+    public Servo hood;
+    public DcMotor turret;
 
 
     @Override
@@ -27,10 +28,11 @@ public class ZeboltzTeleTurret extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class,"front right");
         backleft = hardwareMap.get(DcMotor.class,"back left");
         backright = hardwareMap.get(DcMotor.class,"back right");
-        trigger = hardwareMap.get(DcMotor.class,"transfer");
+        trigger = hardwareMap.get(Servo.class,"transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
         topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+
 
 
         //DEFINING MOTOR DIRECTION***
@@ -40,7 +42,84 @@ public class ZeboltzTeleTurret extends LinearOpMode {
 
 
         while (opModeIsActive()){
+            //DRIVING ***
+            double drive = gamepad1.left_stick_y;
+            double turn = gamepad1.right_stick_x;
+            double strafe = gamepad1.left_stick_x;
 
+            if (gamepad1.right_bumper) {
+                frontleft.setPower(-(drive-turn-strafe) * 0.5); //Pos for strafe
+                frontright.setPower((-drive-turn-strafe) * 0.5); //Neg for strafe
+                backleft.setPower(-(drive-turn+strafe) * 0.5); //Neg for strafe
+                backright.setPower(-(drive+turn-strafe) * 0.5); //Pos for strafe
+            }
+            else {
+                frontleft.setPower(-(drive-turn-strafe)); //Pos for strafe
+                frontright.setPower((-drive-turn-strafe)); //Neg for strafe
+                backleft.setPower(-(drive-turn+strafe)); //Neg for strafe
+                backright.setPower(-(drive+turn-strafe)); //Pos for strafe
+            }
+
+            //TRIGGER INTO BALL LAUNCHER ***
+            if (gamepad1.a) {
+                trigger.setPosition(0); //IDK VALUE (Launch Position)
+            } else if (gamepad1.b) {
+                trigger.setPosition(0); //IDK VALUE (Launch Position)
+            } else {
+                trigger.setPosition(0);
+            }
+
+
+            //ACTUAL BALL LAUNCHER
+            if(gamepad2.dpad_up){
+                topshooter.setPower(-0.59); //Original Power
+                bottomshooter.setPower(-0.59); //Original Power
+            } else if(gamepad2.dpad_left){
+                topshooter.setPower(-0.95); //Sniping Power
+                bottomshooter.setPower(-0.95); //Original Power
+            } else if(gamepad2.dpad_right){
+                topshooter.setPower(-0.51); //Sniping Power
+                bottomshooter.setPower(-0.51); //Original Power
+            } else if(gamepad2.dpad_down    ) {
+                topshooter.setPower(0); //Stopping Power
+                bottomshooter.setPower(0); //Original Power
+            }    else if(gamepad2.a){
+                topshooter.setPower(0.2); //Stopping Power
+                bottomshooter.setPower(0.2); //Original Power
+            }
+
+            //Hood
+            if (gamepad2.x) {
+                hood.setPosition(0);
+            } else if (gamepad2.y) {
+                hood.setPosition(0);
+            } else if (gamepad2.b) {
+                hood.setPosition(0);
+            }   else {
+                hood.setPosition(0);
+            }
+
+            //Turret
+            if (gamepad2.left_bumper){
+
+            }
+
+
+
+            //INTAKE***
+
+
+            if(gamepad2.right_trigger > 0.1){
+                intake.setPower(-1);
+            } else if(gamepad2.right_bumper){
+                intake.setPower(0);
+            }
+
+
+            if(gamepad2.left_trigger > 0.1){
+                intake.setPower(1);
+            }
         }
     }
 }
+
