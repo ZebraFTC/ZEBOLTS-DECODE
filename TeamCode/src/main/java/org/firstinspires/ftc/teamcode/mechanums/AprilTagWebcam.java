@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanums;
 
+import java.util.*;
 
 import android.util.Size;
 
@@ -85,6 +86,13 @@ public class AprilTagWebcam{
         return null;
     }
 
+    public double getPythagorean(AprilTagDetection detectedId){
+        return detectedId.ftcPose.range;
+    }
+
+    public double getAngle(AprilTagDetection detectedId){
+        return detectedId.ftcPose.bearing;
+    }
 
     public void stop(){
         if(visionPortal !=null){

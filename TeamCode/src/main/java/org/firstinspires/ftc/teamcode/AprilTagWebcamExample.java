@@ -58,6 +58,7 @@ public class AprilTagWebcamExample extends OpMode {
             telemetry.addLine("Red Base");
             AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
             aprilTagWebcam.displayDetectionTelemetry(id24);
+
         }
     }
 }

@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.mechanums.AprilTagWebcam;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 
 @TeleOp
 public class ZeboltzTeleTurret extends LinearOpMode {
@@ -17,9 +20,8 @@ public class ZeboltzTeleTurret extends LinearOpMode {
     public DcMotor bottomshooter; //Shooting Motor
     public Servo trigger; //The thing that launches the ball into the shooting system
     public DcMotor intake; //The intake
-    public Servo hood;
-    public DcMotor turret;
-
+    public DcMotor turretRing; //The turret rotator
+    AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,7 +33,9 @@ public class ZeboltzTeleTurret extends LinearOpMode {
         trigger = hardwareMap.get(Servo.class,"transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
-        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        turretRing = hardwareMap.get(DcMotor.class, "turret ring");
+
+        aprilTagWebcam.init(hardwareMap, telemetry);
 
 
 
@@ -46,6 +50,8 @@ public class ZeboltzTeleTurret extends LinearOpMode {
             double drive = gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
             double strafe = gamepad1.left_stick_x;
+            double pythogoreanDistance = 0;
+            double angleWebcam = 0;
 
             if (gamepad1.right_bumper) {
                 frontleft.setPower(-(drive-turn-strafe) * 0.5); //Pos for strafe
@@ -88,18 +94,30 @@ public class ZeboltzTeleTurret extends LinearOpMode {
                 bottomshooter.setPower(0.2); //Original Power
             }
 
-            //Hood
-            if (gamepad2.x) {
-                hood.setPosition(0);
-            } else if (gamepad2.y) {
-                hood.setPosition(0);
-            } else if (gamepad2.b) {
-                hood.setPosition(0);
-            }   else {
-                hood.setPosition(0);
+
+
+
+
+            //Turret and Webcam MAGIC
+            aprilTagWebcam.update();
+
+            //IF THE ANGLE IS LESS THAN -4, TURN THE TURRET TO THE LEFT.
+            //IF THE ANGLE IS GREATER THAN 4, TURN THE TURRET TO THE RIGHT
+
+            if (aprilTagWebcam.getTagBySpecificId(20) != null){
+                AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
+                pythogoreanDistance = aprilTagWebcam.getPythagorean(id20);
+                angleWebcam = aprilTagWebcam.getAngle(id20);
+
+                if (angleWebcam > 4){
+                    telemetry.addLine("Positive Bearing");
+                } else if(angleWebcam < -4){
+                    telemetry.addLine("Negative Bearing");
+                } else {
+                    turretRing.setPower(0);
+                }
             }
 
-            //Turret
             if (gamepad2.left_bumper){
 
             }
@@ -114,7 +132,6 @@ public class ZeboltzTeleTurret extends LinearOpMode {
             } else if(gamepad2.right_bumper){
                 intake.setPower(0);
             }
-
 
             if(gamepad2.left_trigger > 0.1){
                 intake.setPower(1);

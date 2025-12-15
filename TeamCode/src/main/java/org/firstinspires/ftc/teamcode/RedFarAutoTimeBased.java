@@ -98,12 +98,16 @@ public class RedFarAutoTimeBased extends LinearOpMode {
                 break;
             }
         }
+        while (opModeIsActive() && timer.seconds() < 0.5) {
+            intake.setPower(-0.5);
+            trigger.setPower(0.5);
+        }
         while (opModeIsActive() && timer.seconds() < 6.5) {
             intake.setPower(-0.5);
             trigger.setPower(0.5);
         }
         intake.setPower(0);
-        trigger.setPower(0);
+        trigger.setPower(0.1);
         bottomshooter.setPower(0);
         topshooter.setPower(0);
     }
