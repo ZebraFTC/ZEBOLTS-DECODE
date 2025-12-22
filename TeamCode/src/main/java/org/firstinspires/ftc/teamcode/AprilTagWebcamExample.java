@@ -15,6 +15,8 @@ public class AprilTagWebcamExample extends OpMode {
     private double posX;
     private double posY;
     private double posZ;
+    private double bearingAngle;
+    private double distanceDistance;
     AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
 
 
@@ -54,10 +56,34 @@ public class AprilTagWebcamExample extends OpMode {
             telemetry.addLine("Blue Base");
             AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
             aprilTagWebcam.displayDetectionTelemetry(id20);
+
+            bearingAngle = aprilTagWebcam.getPythagorean(id20);
+            distanceDistance = aprilTagWebcam.getAngle(id20);
+
+            if (bearingAngle > 2){
+                telemetry.addLine("Turn right");
+            } else if(bearingAngle < -2){
+                telemetry.addLine("Turn left");
+            } else {
+                telemetry.addLine("Facing the right way!");
+                telemetry.addData("Distance: ", distanceDistance);
+            }
         } else if (aprilTagWebcam.getTagBySpecificId(24) != null){
             telemetry.addLine("Red Base");
             AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
             aprilTagWebcam.displayDetectionTelemetry(id24);
+
+            bearingAngle = aprilTagWebcam.getPythagorean(id24);
+            distanceDistance = aprilTagWebcam.getAngle(id24);
+
+            if (bearingAngle > 2){
+                telemetry.addLine("Turn right");
+            } else if(bearingAngle < -2){
+                telemetry.addLine("Turn left");
+            } else {
+                telemetry.addLine("Facing the right way!");
+                telemetry.addData("Distance: ", distanceDistance);
+            }
 
         }
     }

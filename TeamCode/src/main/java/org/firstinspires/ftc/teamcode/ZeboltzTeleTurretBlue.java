@@ -10,7 +10,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 @TeleOp
-public class ZeboltzTeleTurret extends LinearOpMode {
+public class ZeboltzTeleTurretBlue extends LinearOpMode{
     //DEFINING MOTORS ***
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel

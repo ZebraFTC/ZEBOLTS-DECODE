@@ -32,9 +32,9 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class,"front right");
         backleft = hardwareMap.get(DcMotor.class,"back left");
         backright = hardwareMap.get(DcMotor.class,"back right");
-        trigger = hardwareMap.get(Servo.class,"transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
         turretRing = hardwareMap.get(DcMotor.class, "turret ring");
         hood = hardwareMap.get(Servo.class, "angle changer");
 
@@ -70,28 +70,26 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             }
             turretRing.setPower(turret * 0.5);
 
-            //TRIGGER INTO BALL LAUNCHER ***
-            if (gamepad1.right_trigger <  0.1) {
-                trigger.setPosition(0.97); //IDK VALUE (Launch Position)
-            } else {
-                trigger.setPosition(0.1); //IDK VALUE (Launch Position)
-            }
-
 
             //ACTUAL BALL LAUNCHER
             if(gamepad1.dpad_up){
                 bottomshooter.setPower(-0.51);//Original Power
-                hood.setPosition(0);
+                topshooter.setPower(0.51);//Original Power
+                hood.setPosition(1);
             } else if(gamepad1.dpad_right){
                 bottomshooter.setPower(-0.6); //Original Power
-                hood.setPosition(0.28);
+                topshooter.setPower(0.6);//Original Power
+                hood.setPosition(0.8);
             } else if(gamepad1.dpad_down) {
                 bottomshooter.setPower(-0.94); //Original Power
-                hood.setPosition(0.4);
+                topshooter.setPower(0.94);//Original Power
+                hood.setPosition(0.65);
             }
               else if(gamepad1.dpad_left) {
                     bottomshooter.setPower(0); //Original Power
-                    hood.setPosition(0);
+                    topshooter.setPower(0);//Original Power
+                    hood.setPosition(1);
+
             }
 
 
