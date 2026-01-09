@@ -19,11 +19,12 @@ public class RedNearAutonomous extends LinearOpMode {
     public DcMotor frontright; //Wheel
     public DcMotor backleft; //Wheel
     public DcMotor backright; //Wheel
-    public DcMotor shooter; //Shooting Motor
-    public DcMotor trigger; //The thing that launches the ball into the shooting system
+    public DcMotor topshooter; //Shooting Motor
+    public DcMotor bottomshooter; //Shooting Motor
     public DcMotor intake; //The intake
-    public DcMotor bottomshooter; //The motors in the chamber
-    public DcMotor topshooter; //The motors in the chamber
+    public Servo transfer; //The motors in the chamber
+    public DcMotor turretRing; //The turret rotator
+    public Servo hood;
     private int leftFrontPos;
     private int rightFrontPos;
     private int leftBackPos;
@@ -44,10 +45,11 @@ public class RedNearAutonomous extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class, "front right");
         backleft = hardwareMap.get(DcMotor.class, "back left");
         backright = hardwareMap.get(DcMotor.class, "back right");
-        trigger = hardwareMap.get(DcMotor.class, "transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
         topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        transfer = hardwareMap.get(Servo.class, "shooter 1");
+        turretRing = hardwareMap.get(DcMotor.class, "shooter 2");
 
 
         //RESTARTING ENCODERS
@@ -55,7 +57,6 @@ public class RedNearAutonomous extends LinearOpMode {
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        trigger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bottomshooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topshooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -147,10 +148,10 @@ public class RedNearAutonomous extends LinearOpMode {
         }
         while (opModeIsActive() && timer.seconds() < runTime) {
             intake.setPower(intakeSpeed);
-            trigger.setPower(triggerSpeed);
+
         }
         intake.setPower(0);
-        trigger.setPower(0);
+
         bottomshooter.setPower(0);
         topshooter.setPower(0);
     }

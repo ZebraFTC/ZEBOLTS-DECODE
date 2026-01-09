@@ -16,10 +16,12 @@ public class RedNearAutoTimeBased extends LinearOpMode {
     public DcMotor frontright; //Wheel
     public DcMotor backleft; //Wheel
     public DcMotor backright; //Wheel
-    public DcMotor shooter; //Shooting Motor
-    public Servo trigger; //The thing that launches the ball into the shooting system
+    public DcMotor topshooter; //Shooting Motor
+    public Servo transfer; //The thing that launches the ball into the shooting system
     public DcMotor intake; //The intake
     public DcMotor bottomshooter; //The motors in the chamber
+    public Servo hood;
+    public DcMotor turretring;
     private int leftFrontPos;
     private int rightFrontPos;
     private int leftBackPos;
@@ -38,9 +40,12 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class, "front right");
         backleft = hardwareMap.get(DcMotor.class, "back left");
         backright = hardwareMap.get(DcMotor.class, "back right");
-        trigger = hardwareMap.get(Servo.class, "transfer");
+        transfer = hardwareMap.get(Servo.class, "transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        hood = hardwareMap.get(Servo.class, "angle changer");
+        turretring = hardwareMap.get(DcMotor.class, "turret ring");
 
         //SETTING MOTOR DIRECTIONS
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -49,7 +54,7 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         //THE AUTO ITSELF
         waitForStart();
         driveWhileSpinUp(0.5, -0.5, -0.5, -0.5, -0.5, 0, 0); //drives back at beginning
-        shootClose();
+        shootClose(3000);
         driveWhileSpinUp(0.21, 0.5, -0.5, 0.5, -0.5, 0.15, 0); //turns after shooting three balls
         driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0.15, 0);//straifs to other 3 balls
         driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0.15, -1); //intake next three balls
@@ -57,7 +62,7 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         driveWhileSpinUp(0.15, -0.5, 0.5, -0.5, 0.5, 0, 0); //turns after picking  up three balls
         driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0, 0); //straif after turn with three balls
         driveWhileSpinUp(0.5, 0, 0, 0, 0, -0.47, 0);
-        shootClose();
+        shootClose(3000);
         driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0);
     }
 
@@ -70,8 +75,11 @@ public class RedNearAutoTimeBased extends LinearOpMode {
             frontright.setPower(frPower);
             backright.setPower(brPower);
             intake.setPower(intakePower);
-            trigger.setPosition(0.1);
             bottomshooter.setPower(shooterPower);
+            topshooter.setPower(shooterPower);
+            transfer.setPosition(0);
+            hood.setPosition(0);
+            turretring.setPower(0);
 
 
         }
@@ -82,11 +90,10 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         intake.setPower(0);
     }
 
-    private void shootClose() {
-        bottomshooter.setPower(-0.55);
+    private void shootClose(long waitDurationMilli) {
         timer.reset();
         long startTime = System.currentTimeMillis();
-        long waitDuration = 4000; // Wait for 2 seconds
+        long waitDuration = waitDurationMilli; // Wait for 3 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;
@@ -96,44 +103,6 @@ public class RedNearAutoTimeBased extends LinearOpMode {
                 Thread.currentThread().interrupt();
                 break;
             }
-        }
-        while (opModeIsActive() && timer.seconds() < 0.2) {
-            intake.setPower(-0.75);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.3) {
-            trigger.setPosition(0.97);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.5) {
-            trigger.setPosition(0.1);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.25) {
-            trigger.setPosition(0.97);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.25) {
-            trigger.setPosition(0.1);
-        }
-        while (opModeIsActive() && timer.seconds() < 1) {
-            intake.setPower(-0.75);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.25) {
-            trigger.setPosition(0.97);
-        }
-        while (opModeIsActive() && timer.seconds() < 0.25) {
-            trigger.setPosition(0.1);
-        }
-        while (opModeIsActive() && timer.seconds() < 1) {
-            intake.setPower(-0.75);
-        }
-        intake.setPower(0);
-        trigger.setPosition(0);
-        bottomshooter.setPower(0);
-    }
-    private void intake() {
-        while (opModeIsActive() && timer.seconds() < 0.3) {
-            frontleft.setPower(-0.5);
-            backleft.setPower(-0.5);
-            frontright.setPower(0.5);
-            backright.setPower(0.5);
         }
     }
 }
