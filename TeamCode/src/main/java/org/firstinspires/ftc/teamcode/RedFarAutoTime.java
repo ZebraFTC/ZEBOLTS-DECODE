@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
-public class RedNearAutoTimeBased extends LinearOpMode {
+public class RedFarAutoTime extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -53,18 +53,16 @@ public class RedNearAutoTimeBased extends LinearOpMode {
 
         //THE AUTO ITSELF
         waitForStart();
-        driveWhileSpinUp(0.5, -0.5, -0.5, -0.5, -0.5, 0.51, -0.8,1,1,0); //drives back at beginning
-        driveWhileSpinUp(1.5, 0, 0, 0, 0, 0.51, -0.8,1,1,0);
-        driveWhileSpinUp(0.75, 0, 0, 0, 0, 0.51, -0.8,0.85,1,0);
-        driveWhileSpinUp(0.21, 0.5, -0.5, 0.5, -0.5, 0, 0,1,1,0); //turns after shooting three balls
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0,1,1,0);//straifs to other 3 balls
-        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0, -0.8,1,1,0); //intake next three balls
-        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, 0, 0,1,1,0); //go back after getting three balls
-        driveWhileSpinUp(0.15, -0.5, 0.5, -0.5, 0.5, 0.51, 0,1,1,0); //turns after picking  up three balls
-        driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0.51, 0,1,1,0); //straif after turn with three balls
-        driveWhileSpinUp(0.5, 0, 0, 0, 0, 0.51, 0,0,1,0);
-        driveWhileSpinUp(0.75, 0, 0, 0, 0, 0.51, -0.8,0.85,1,0);
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0,1,1,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 0.78, 0,1,0.65,0);
+        driveWhileSpinUp(0.75, 0, 0, 0, 0, 0.78, -0.8,0.4,0.65,0);
+        driveWhileSpinUp(0.65, 0.5, 0.5, 0.5, 0.5, 0, 0,1,0.65,0);
+        driveWhileSpinUp(0.38, 0.5, -0.5, 0.5, -0.5, 0, 0,1,0.65,0);
+        driveWhileSpinUp(1, 0.5, 0.5, 0.5, 0.5, 0, -0.8,1,0.65,0);
+        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0,1,0.65,0);
+        driveWhileSpinUp(0.23, -0.5, 0.5, -0.5, 0.5, 0.78, 0,1,0.65,0);
+        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0.78, 0,1,0.65,0);
+        driveWhileSpinUp(0.75, 0, 0, 0, 0, 0.78, -0.8,0.4,0.65,0);
+        driveWhileSpinUp(0.5, 0.5, 0.5, 0.5, 0.5, 0, 0,1,0.65,0);
     }
 
     //DRIVE FUNCTION

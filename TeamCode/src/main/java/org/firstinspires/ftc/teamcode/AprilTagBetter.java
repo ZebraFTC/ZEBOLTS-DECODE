@@ -77,7 +77,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Initialize AprilTag detection
      */
-    private void initAprilTag() {
+    public void initAprilTag() {
         // Create the AprilTag processor
         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
@@ -95,7 +95,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Initialize the turret motor
      */
-    private void initTurret() {
+    public void initTurret() {
         // Get the turret motor from hardware map
         // Make sure "turretMotor" matches the name in your robot configuration
         turretMotor = hardwareMap.get(DcMotor.class, "turret ring");
@@ -112,7 +112,7 @@ public class AprilTagBetter extends LinearOpMode {
      * Scan by rotating turret left to right until AprilTag is found
      * Returns true if tag found, false if timeout
      */
-    private boolean scanForAprilTag() {
+    public boolean scanForAprilTag() {
         telemetry.addData("Status", "Scanning for AprilTag...");
         telemetry.update();
 
@@ -156,7 +156,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Scan for a specific AprilTag ID
      */
-    private boolean scanForSpecificTag(int targetTagId) {
+    public boolean scanForSpecificTag(int targetTagId) {
         telemetry.addData("Status", "Scanning for Tag ID: " + targetTagId);
         telemetry.update();
 
@@ -194,7 +194,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Center the turret on the detected AprilTag using bearing
      */
-    private void centerTurretOnTag() {
+    public void centerTurretOnTag() {
         telemetry.addData("Status", "Centering turret on tag...");
         telemetry.update();
 
@@ -243,7 +243,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Bidirectional scan - rotates one way, then reverses if no tag found
      */
-    private boolean bidirectionalScan() {
+    public boolean bidirectionalScan() {
         telemetry.addData("Status", "Starting bidirectional scan...");
         telemetry.update();
 
@@ -296,7 +296,7 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Bidirectional scan for a specific AprilTag ID
      */
-    private boolean bidirectionalScanForSpecificTag(int targetTagId) {
+    public boolean bidirectionalScanForSpecificTag(int targetTagId) {
         telemetry.addData("Status", "Scanning for Tag ID: " + targetTagId);
         telemetry.update();
 
@@ -354,7 +354,7 @@ public class AprilTagBetter extends LinearOpMode {
      * Continuously track and follow the AprilTag
      * Keeps the turret centered on the tag as it moves
      */
-    private void trackAprilTag() {
+    public void trackAprilTag() {
         telemetry.addData("Status", "Tracking AprilTag...");
         telemetry.update();
 
@@ -393,14 +393,14 @@ public class AprilTagBetter extends LinearOpMode {
     /**
      * Stop the turret motor
      */
-    private void stopTurret() {
+    public void stopTurret() {
         turretMotor.setPower(0);
     }
 
     /**
      * Display AprilTag detections to telemetry
      */
-    private void telemetryAprilTag() {
+    public void telemetryAprilTag() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
