@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -10,86 +12,138 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@TeleOp(name = "AprilTag Turret Scanner", group = "Vision")
+@TeleOp(name = "Zebolts TeleOp with AprilTag", group = "TeleOp")
 public class AprilTagGood extends LinearOpMode {
 
+    // DRIVE MOTORS
+    public DcMotor frontleft;
+    public DcMotor frontright;
+    public DcMotor backleft;
+    public DcMotor backright;
+
+    // SHOOTER MOTORS
+    public DcMotor topshooter;
+    public DcMotor bottomshooter;
+    public DcMotor intake;
+
+    // SERVOS
+    public Servo transfer;
+    public Servo hood;
+
+    // TURRET
+    public DcMotor turretMotor;
+
+    // APRILTAG VISION
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
-    private DcMotor turretMotor;
+
+    // AprilTag tracking state
+    private boolean aprilTagTrackingEnabled = false;
+    private boolean lastGamepad2A = false;
 
     // Turret configuration constants
-    private static final double TURRET_SCAN_POWER = 0.4;  // Slow scan speed
-    private static final double TURRET_ALIGN_POWER = 0.2; // Slow alignment speed
-    private static final int TURRET_SCAN_TIMEOUT = 10000;  // 10 seconds
-    private static final double BEARING_TOLERANCE = 3.0;   // Degrees - how centered is "good enough"
-
-    // **CHANGE THIS TO SET WHICH APRILTAG TO FIND**
-    // Set to -1 to find ANY tag, or set to a specific ID (1, 2, 3, etc.)
-    private static final int TARGET_TAG_ID = -1;  // Change this number!
-
-    // For bidirectional scan: how far to scan in each direction (encoder ticks)
-    private static final int SCAN_RANGE_TICKS = 634;  // Adjust for your turret
+    private static final double TURRET_MANUAL_POWER = 0.5;
+    private static final double TURRET_ALIGN_POWER = 0.25;
+    private static final double BEARING_TOLERANCE = 3.0;
+    private static final int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
+    private static final boolean INVERT_TURRET_TRACKING = false; // Set to true if turret turns wrong way during tracking
 
     @Override
-    public void runOpMode() {
-        initAprilTag();
+    public void runOpMode() throws InterruptedException {
+        // INITIALIZE HARDWARE
+        initDriveMotors();
+        initShooterSystem();
         initTurret();
+        initAprilTag();
 
-        // Wait for the DS start button to be touched
         telemetry.addData("Status", "Initialized");
-        telemetry.addData(">", "Touch Play to start OpMode");
+        telemetry.addData(">", "Press A on gamepad2 to toggle AprilTag tracking");
         telemetry.update();
+
         waitForStart();
 
-        if (opModeIsActive()) {
-            // Scan for AprilTag by rotating turret (bidirectional scan)
-            boolean tagFound;
-
-            if (TARGET_TAG_ID == -1) {
-                // Scan for ANY AprilTag
-                telemetry.addData("Target", "Any AprilTag");
-                telemetry.update();
-                tagFound = bidirectionalScan();
-            } else {
-                // Scan for SPECIFIC AprilTag ID
-                telemetry.addData("Target", "AprilTag ID " + TARGET_TAG_ID);
-                telemetry.update();
-                tagFound = bidirectionalScanForSpecificTag(TARGET_TAG_ID);
-            }
-
-            if (tagFound) {
-                // Center the turret on the detected tag
-                centerTurretOnTag();
-
-                // Main loop after tag is centered
-                while (opModeIsActive()) {
-                    telemetryAprilTag();
-                    telemetry.update();
-                    sleep(20);
+        while (opModeIsActive()) {
+            // TOGGLE APRILTAG TRACKING (Gamepad2 A button)
+            boolean currentGamepad2A = gamepad2.a;
+            if (currentGamepad2A && !lastGamepad2A) {
+                aprilTagTrackingEnabled = !aprilTagTrackingEnabled;
+                if (!aprilTagTrackingEnabled) {
+                    turretMotor.setPower(0); // Stop turret when disabling tracking
                 }
-            } else {
-                telemetry.addData("Status", "No AprilTag found during scan");
-                telemetry.update();
             }
+            lastGamepad2A = currentGamepad2A;
+
+            // DRIVING
+            handleDriving();
+
+            // SHOOTER CONTROLS
+            handleShooter();
+
+            // TRANSFER CONTROLS
+            handleTransfer();
+
+            // INTAKE CONTROLS
+            handleIntake();
+
+            // TURRET CONTROLS
+            handleTurret();
+
+            // TELEMETRY
+            displayTelemetry();
         }
 
-        // Save CPU resources when done
-        stopTurret();
-        visionPortal.close();
+        // Cleanup
+        if (visionPortal != null) {
+            visionPortal.close();
+        }
+    }
+
+    /**
+     * Initialize drive motors
+     */
+    private void initDriveMotors() {
+        frontleft = hardwareMap.get(DcMotor.class, "front left");
+        frontright = hardwareMap.get(DcMotor.class, "front right");
+        backleft = hardwareMap.get(DcMotor.class, "back left");
+        backright = hardwareMap.get(DcMotor.class, "back right");
+
+        frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backleft.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    /**
+     * Initialize shooter system
+     */
+    private void initShooterSystem() {
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        hood = hardwareMap.get(Servo.class, "angle changer");
+        transfer = hardwareMap.get(Servo.class, "transfer");
+    }
+
+    /**
+     * Initialize turret motor
+     */
+    private void initTurret() {
+        turretMotor = hardwareMap.get(DcMotor.class, "turret ring");
+        // Try FORWARD direction first - change to REVERSE if it turns the wrong way
+        turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
      * Initialize AprilTag detection
      */
     private void initAprilTag() {
-        // Create the AprilTag processor
         aprilTag = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setDrawTagOutline(true)
                 .build();
 
-        // Create the vision portal using the webcam
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(aprilTag)
@@ -97,298 +151,159 @@ public class AprilTagGood extends LinearOpMode {
     }
 
     /**
-     * Initialize the turret motor
+     * Handle driving controls
      */
-    private void initTurret() {
-        // Get the turret motor from hardware map
-        // Make sure "turretMotor" matches the name in your robot configuration
-        turretMotor = hardwareMap.get(DcMotor.class, "turret ring");
+    private void handleDriving() {
+        double drive = gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+        double strafe = gamepad1.left_stick_x;
 
-        // Reset encoder and set mode
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double speedMultiplier = gamepad1.right_bumper ? 0.5 : 1.0;
 
-        // Set motor to brake when power is zero (important for turret stability)
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontleft.setPower(-(drive - turn - strafe) * speedMultiplier);
+        frontright.setPower((-drive - turn - strafe) * speedMultiplier);
+        backleft.setPower(-(drive - turn + strafe) * speedMultiplier);
+        backright.setPower(-(drive + turn - strafe) * speedMultiplier);
     }
 
     /**
-     * Scan by rotating turret left to right until AprilTag is found
-     * Returns true if tag found, false if timeout
+     * Handle shooter controls (gamepad1 D-pad)
      */
-    private boolean scanForAprilTag() {
-        telemetry.addData("Status", "Scanning for AprilTag...");
-        telemetry.update();
+    private void handleShooter() {
+        if (gamepad1.dpad_up) {
+            // Close range shot
+            bottomshooter.setPower(-0.51);
+            topshooter.setPower(0.51);
+            hood.setPosition(1);
+            intake.setPower(-0.8);
+        } else if (gamepad1.dpad_right) {
+            // Medium range shot
+            bottomshooter.setPower(-0.56);
+            topshooter.setPower(0.56);
+            hood.setPosition(0.75);
+            intake.setPower(-0.5);
+        } else if (gamepad1.dpad_down) {
+            // Long range shot
+            bottomshooter.setPower(-0.78);
+            topshooter.setPower(0.78);
+            hood.setPosition(0.65);
+            intake.setPower(-0.4);
+        } else if (gamepad1.dpad_left) {
+            // Stop shooter
+            bottomshooter.setPower(0);
+            topshooter.setPower(0);
+            hood.setPosition(1);
+            intake.setPower(0);
+        }
+    }
 
-        long startTime = System.currentTimeMillis();
+    /**
+     * Handle transfer servo (gamepad1 right trigger)
+     */
+    private void handleTransfer() {
+        if (gamepad1.right_trigger == 0) {
+            transfer.setPosition(1);
+        } else {
+            transfer.setPosition(0.85);
+        }
+    }
 
-        // Start rotating turret clockwise
-        turretMotor.setPower(TURRET_SCAN_POWER);
+    /**
+     * Handle intake controls (gamepad2 triggers)
+     */
+    private void handleIntake() {
+        if (gamepad2.right_trigger > 0.1) {
+            intake.setPower(-1);
+        } else if (gamepad2.left_trigger > 0.1) {
+            intake.setPower(1);
+        } else {
+            intake.setPower(0);
+        }
+    }
 
-        while (opModeIsActive()) {
-            // Check for timeout
-            if (System.currentTimeMillis() - startTime > TURRET_SCAN_TIMEOUT) {
-                stopTurret();
-                telemetry.addData("Status", "Scan timeout - no tag found");
-                telemetry.update();
-                return false;
-            }
+    /**
+     * Handle turret controls - either manual or AprilTag tracking
+     */
+    private void handleTurret() {
+        if (aprilTagTrackingEnabled) {
+            // APRILTAG TRACKING MODE
+            trackAprilTag();
+        } else {
+            // MANUAL CONTROL MODE (gamepad2 left stick X)
+            double turret = gamepad2.left_stick_x;
+            turretMotor.setPower(turret * TURRET_MANUAL_POWER);
+        }
+    }
 
-            // Check for AprilTag
-            List<AprilTagDetection> detections = aprilTag.getDetections();
-            if (detections.size() > 0) {
-                stopTurret();
-                telemetry.addData("Status", "AprilTag Found!");
-                telemetry.addData("Tag ID", detections.get(0).id);
-                telemetry.update();
-                sleep(500);
-                return true;
-            }
+    /**
+     * Track AprilTag and adjust turret to keep it centered
+     */
+    private void trackAprilTag() {
+        List<AprilTagDetection> detections = aprilTag.getDetections();
 
-            // Display scan status
-            telemetry.addData("Status", "Scanning...");
-            telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
-            telemetry.addData("Scan Time", (System.currentTimeMillis() - startTime) / 1000.0 + "s");
-            telemetry.update();
-
-            sleep(50);
+        if (detections.size() == 0) {
+            // No tag detected - stop turret
+            turretMotor.setPower(0);
+            return;
         }
 
-        return false;
-    }
-
-    /**
-     * Scan for a specific AprilTag ID
-     */
-    private boolean scanForSpecificTag(int targetTagId) {
-        telemetry.addData("Status", "Scanning for Tag ID: " + targetTagId);
-        telemetry.update();
-
-        long startTime = System.currentTimeMillis();
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive()) {
-            if (System.currentTimeMillis() - startTime > TURRET_SCAN_TIMEOUT) {
-                stopTurret();
-                return false;
-            }
-
-            List<AprilTagDetection> detections = aprilTag.getDetections();
-
+        // Find target tag
+        AprilTagDetection targetDetection = null;
+        if (TARGET_TAG_ID == -1) {
+            // Use first detected tag
+            targetDetection = detections.get(0);
+        } else {
+            // Look for specific tag ID
             for (AprilTagDetection detection : detections) {
-                if (detection.id == targetTagId) {
-                    stopTurret();
-                    telemetry.addData("Status", "Target Tag Found!");
-                    telemetry.addData("Tag ID", targetTagId);
-                    telemetry.update();
-                    sleep(500);
-                    return true;
+                if (detection.id == TARGET_TAG_ID) {
+                    targetDetection = detection;
+                    break;
                 }
             }
-
-            telemetry.addData("Status", "Scanning for Tag " + targetTagId);
-            telemetry.addData("Tags Visible", detections.size());
-            telemetry.update();
-            sleep(50);
         }
 
-        return false;
+        if (targetDetection == null) {
+            turretMotor.setPower(0);
+            return;
+        }
+
+        double bearing = targetDetection.ftcPose.bearing;
+
+        // Check if centered
+        if (Math.abs(bearing) < BEARING_TOLERANCE) {
+            turretMotor.setPower(0);
+            return;
+        }
+
+        // Proportional control for smooth tracking
+        double adjustPower = bearing / 18.0;
+        adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower));
+
+        turretMotor.setPower(adjustPower);
     }
 
     /**
-     * Center the turret on the detected AprilTag using bearing
+     * Display telemetry information
      */
-    private void centerTurretOnTag() {
-        telemetry.addData("Status", "Centering turret on tag...");
-        telemetry.update();
+    private void displayTelemetry() {
+        telemetry.addData("AprilTag Tracking", aprilTagTrackingEnabled ? "ENABLED" : "DISABLED");
+        telemetry.addData("Control Mode", aprilTagTrackingEnabled ? "Auto" : "Manual");
 
-        while (opModeIsActive()) {
+        if (aprilTagTrackingEnabled) {
             List<AprilTagDetection> detections = aprilTag.getDetections();
+            telemetry.addData("Tags Detected", detections.size());
 
-            if (detections.size() == 0) {
-                // Lost the tag
-                stopTurret();
-                telemetry.addData("Status", "Lost AprilTag");
-                telemetry.update();
-                break;
-            }
-
-            AprilTagDetection detection = detections.get(0);
-            double bearing = detection.ftcPose.bearing;
-
-            // Check if we're centered
-            if (Math.abs(bearing) < BEARING_TOLERANCE) {
-                stopTurret();
-                telemetry.addData("Status", "Turret Centered!");
-                telemetry.addData("Final Bearing", "%.2f degrees", bearing);
-                telemetry.update();
-                sleep(500);
-                break;
-            }
-
-            // Adjust turret based on bearing
-            // Positive bearing = tag is to the right, so rotate clockwise
-            // Negative bearing = tag is to the left, so rotate counter-clockwise
-            if (bearing > 0) {
-                turretMotor.setPower(TURRET_ALIGN_POWER);
-            } else {
-                turretMotor.setPower(-TURRET_ALIGN_POWER);
-            }
-
-            telemetry.addData("Status", "Aligning...");
-            telemetry.addData("Bearing", "%.2f degrees", bearing);
-            telemetry.addData("Adjustment", bearing > 0 ? "Rotating Right" : "Rotating Left");
-            telemetry.update();
-
-            sleep(50);
-        }
-    }
-
-    /**
-     * Bidirectional scan - rotates one way, then reverses if no tag found
-     */
-    private boolean bidirectionalScan() {
-        telemetry.addData("Status", "Starting bidirectional scan...");
-        telemetry.update();
-
-        int startPosition = turretMotor.getCurrentPosition();
-
-        // Scan clockwise
-        turretMotor.setTargetPosition(startPosition + SCAN_RANGE_TICKS);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            List<AprilTagDetection> detections = aprilTag.getDetections();
             if (detections.size() > 0) {
-                turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                stopTurret();
-                return true;
+                AprilTagDetection detection = detections.get(0);
+                telemetry.addData("Tag ID", detection.id);
+                telemetry.addData("Bearing", "%.2f degrees", detection.ftcPose.bearing);
+                telemetry.addData("Range", "%.2f inches", detection.ftcPose.range);
             }
-            sleep(50);
         }
 
-        // If not found, scan counter-clockwise
-        turretMotor.setTargetPosition(startPosition - SCAN_RANGE_TICKS);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            List<AprilTagDetection> detections = aprilTag.getDetections();
-            if (detections.size() > 0) {
-                turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                stopTurret();
-                return true;
-            }
-            sleep(50);
-        }
-
-        // Return to start position
-        turretMotor.setTargetPosition(startPosition);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            sleep(50);
-        }
-
-        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        stopTurret();
-        return false;
-    }
-
-    /**
-     * Bidirectional scan for a specific AprilTag ID
-     */
-    private boolean bidirectionalScanForSpecificTag(int targetTagId) {
-        telemetry.addData("Status", "Scanning for Tag ID: " + targetTagId);
-        telemetry.update();
-
-        int startPosition = turretMotor.getCurrentPosition();
-
-        // Scan clockwise
-        turretMotor.setTargetPosition(startPosition + SCAN_RANGE_TICKS);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            List<AprilTagDetection> detections = aprilTag.getDetections();
-            for (AprilTagDetection detection : detections) {
-                if (detection.id == targetTagId) {
-                    turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    stopTurret();
-                    return true;
-                }
-            }
-            sleep(50);
-        }
-
-        // Scan counter-clockwise
-        turretMotor.setTargetPosition(startPosition - SCAN_RANGE_TICKS);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            List<AprilTagDetection> detections = aprilTag.getDetections();
-            for (AprilTagDetection detection : detections) {
-                if (detection.id == targetTagId) {
-                    turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    stopTurret();
-                    return true;
-                }
-            }
-            sleep(50);
-        }
-
-        // Return to start
-        turretMotor.setTargetPosition(startPosition);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(TURRET_SCAN_POWER);
-
-        while (opModeIsActive() && turretMotor.isBusy()) {
-            sleep(50);
-        }
-
-        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        stopTurret();
-        return false;
-    }
-
-    /**
-     * Stop the turret motor
-     */
-    private void stopTurret() {
-        turretMotor.setPower(0);
-    }
-
-    /**
-     * Display AprilTag detections to telemetry
-     */
-    private void telemetryAprilTag() {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        telemetry.addData("# AprilTags Detected", currentDetections.size());
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
-
-        // Step through the list of detections and display info for each
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s",
-                        detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-                        detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
-                        detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)",
-                        detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)",
-                        detection.center.x, detection.center.y));
-            }
-        }
-
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        telemetry.addLine("RBE = Range, Bearing & Elevation");
+        telemetry.addData("", "");
+        telemetry.addData("Controls", "Gamepad2 A = Toggle AprilTag");
+        telemetry.update();
     }
 }

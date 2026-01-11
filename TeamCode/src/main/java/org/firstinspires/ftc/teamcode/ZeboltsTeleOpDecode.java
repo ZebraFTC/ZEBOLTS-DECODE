@@ -90,9 +90,9 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
 
 
             if (gamepad1.right_trigger == 0) {
-                transfer.setPosition(1);
+                transfer.setPosition(0.87);
             } else
-                transfer.setPosition(0.85);
+                transfer.setPosition(1);
 
             if (gamepad2.right_trigger > 0.1) {
                 intake.setPower(-1);
