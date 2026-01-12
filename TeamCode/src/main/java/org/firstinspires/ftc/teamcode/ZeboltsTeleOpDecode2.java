@@ -46,6 +46,7 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     private static final double TURRET_ALIGN_POWER = 0.25;
     private static final double BEARING_TOLERANCE = 3.0;
     private static final int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
+    private static final boolean INVERT_TURRET_TRACKING = false; // Set to true if turret turns wrong way during tracking
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -126,7 +127,8 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
      */
     private void initTurret() {
         turretMotor = hardwareMap.get(DcMotor.class, "turret ring");
-        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Try FORWARD direction first - change to REVERSE if it turns the wrong way
+        turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
