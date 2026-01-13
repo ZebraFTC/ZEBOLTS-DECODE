@@ -22,7 +22,6 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     public DcMotor backright;
 
     // SHOOTER MOTORS
-    public DcMotor topshooter;
     public DcMotor bottomshooter;
     public DcMotor intake;
 
@@ -117,7 +116,6 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     private void initShooterSystem() {
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
-        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
         hood = hardwareMap.get(Servo.class, "angle changer");
         transfer = hardwareMap.get(Servo.class, "transfer");
     }
@@ -173,25 +171,21 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
         if (gamepad1.dpad_up) {
             // Close range shot
             bottomshooter.setPower(-0.51);
-            topshooter.setPower(0.51);
             hood.setPosition(1);
             intake.setPower(-0.8);
         } else if (gamepad1.dpad_right) {
             // Medium range shot
             bottomshooter.setPower(-0.56);
-            topshooter.setPower(0.56);
             hood.setPosition(0.75);
             intake.setPower(-0.5);
         } else if (gamepad1.dpad_down) {
             // Long range shot
             bottomshooter.setPower(-0.78);
-            topshooter.setPower(0.78);
             hood.setPosition(0.65);
             intake.setPower(-0.4);
         } else if (gamepad1.dpad_left) {
             // Stop shooter
             bottomshooter.setPower(0);
-            topshooter.setPower(0);
             hood.setPosition(1);
             intake.setPower(0);
         }
@@ -202,9 +196,9 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
      */
     private void handleTransfer() {
         if (gamepad1.right_trigger == 0) {
-            transfer.setPosition(1);
-        } else {
             transfer.setPosition(0.85);
+        } else {
+            transfer.setPosition(1);
         }
     }
 
@@ -264,10 +258,23 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
 
         if (targetDetection == null) {
             turretMotor.setPower(0);
-            return;
+            return; //658 to -852 HARD STOP
         }
 
         double bearing = targetDetection.ftcPose.bearing;
+
+        //Printing Range and WARNING for passing "hardstops"
+        telemetry.addData("Range from target ", targetDetection.ftcPose.range); //Prints range from QR
+
+        if (turretMotor.getCurrentPosition() > 658){
+            telemetry.addLine("WARNING: Turret turning to much!");
+            turretMotor.setPower(0);
+        } else if (turretMotor.getCurrentPosition() < -852){
+            telemetry.addLine("WARNING: Turret turning to much!");
+            turretMotor.setPower(0);
+        }
+
+        telemetry.update();
 
         // Check if centered
         if (Math.abs(bearing) < BEARING_TOLERANCE) {
@@ -304,6 +311,7 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
         telemetry.addData("", "");
         telemetry.addData("Controls", "Gamepad2 A = Toggle AprilTag");
+
         telemetry.update();
     }
 }
