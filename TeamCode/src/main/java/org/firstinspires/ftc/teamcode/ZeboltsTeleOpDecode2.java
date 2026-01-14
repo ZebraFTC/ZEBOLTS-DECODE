@@ -268,10 +268,8 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
 
         if (turretMotor.getCurrentPosition() > 658){
             telemetry.addLine("WARNING: Turret turning to much!");
-            turretMotor.setPower(0);
         } else if (turretMotor.getCurrentPosition() < -852){
             telemetry.addLine("WARNING: Turret turning to much!");
-            turretMotor.setPower(0);
         }
 
         telemetry.update();

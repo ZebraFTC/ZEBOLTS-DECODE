@@ -51,18 +51,18 @@ public class RedNearAutoTimeBased extends LinearOpMode {
 
         //THE AUTO ITSELF
         waitForStart();
-        driveWhileSpinUp(0.5, -0.5, -0.5, -0.5, -0.5, 0.56, -0.8,0.85,1,0); //drives back at beginning
-        driveWhileSpinUp(4, 0, 0, 0, 0, 0.56, -0.8,0.85,1,0);
-        driveWhileSpinUp(2, 0, 0, 0, 0, 0.56, -0.8,1,0.75,0);
-        driveWhileSpinUp(0.21, 0.5, -0.5, 0.5, -0.5, 0, 0,0.85,1,0); //turns after shooting three balls
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0,0.85,1,0);//straifs to other 3 balls
-        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0, -0.8,0.85,1,0); //intake next three balls
-        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, 0, 0,0.85,1,0); //go back after getting three balls
-        driveWhileSpinUp(0.15, -0.5, 0.5, -0.5, 0.5, 0.56, 0,0.85,1,0); //turns after picking  up three balls
-        driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0.56, 0,0.85,1,0); //straif after turn with three balls
-        driveWhileSpinUp(0.5, 0, 0, 0, 0, 0.56, 0,0.85,1,0);
-        driveWhileSpinUp(3, 0, 0, 0, 0, 0.56, -0.8,1,0.75,0);
-        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0,0.85,1,0);
+        driveWhileSpinUp(0.48, -0.5, -0.5, -0.5, -0.5, 0.65, -0.8,0.85,0.9,0); //drives back at beginning
+        driveWhileSpinUp(4, 0, 0, 0, 0, 0.65, -0.8,0.85,0.9,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 0.65, -0.8,1,0.82,0);
+        driveWhileSpinUp(0.22, 0.5, -0.5, 0.5, -0.5, 0, 0,0.85,0.9,0); //turns after shooting three balls
+        driveWhileSpinUp(0.85, 0.5, -0.5, -0.5, 0.5, 0, 0,0.85,0.9,0);//straifs to other 3 balls
+        driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0, -0.8,0.85,0.9,0); //intake next three balls
+        driveWhileSpinUp(0.4, -0.5, -0.5, -0.5, -0.5, 0, -0.8,0.85,0.9,0); //go back after getting three balls
+        driveWhileSpinUp(0.21, -0.5, 0.5, -0.5, 0.5, 0.65, -0.8,0.85,0.9,0); //turns after picking  up three balls
+        driveWhileSpinUp(0.79, -0.5, 0.5, 0.5, -0.5, 0.65, -0.8,0.85,0.9,0); //straif after turn with three balls
+        driveWhileSpinUp(4, 0, 0, 0, 0, 0.65, -0.8,0.85,0.9,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 0.65, -0.8,1,0.82,0);
+        driveWhileSpinUp(0.7, 0.5, -0.5, -0.5, 0.5, 0, 0,0.85,0.9,0);
     }
 
     //DRIVE FUNCTION
