@@ -241,13 +241,13 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private void handleShooter() {
         if (gamepad1.dpad_up) {
             // Close range shot
-            bottomshooter.setPower(-0.6);
-            hood.setPosition(0.9);
+            bottomshooter.setPower(-0.61);
+            hood.setPosition(0.95);
             intake.setPower(-0.8);
         } else if (gamepad1.dpad_right) {
             // Medium range shot
-            bottomshooter.setPower(-0.78);
-            hood.setPosition(0.75);
+            bottomshooter.setPower(-0.68);
+            hood.setPosition(0.7);
             intake.setPower(-0.5);
         } else if (gamepad1.dpad_down) {
             // Long range shot
@@ -267,13 +267,14 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
      */
     private void handleTransfer() {
         if (gamepad1.right_trigger == 0) {
-            transfer.setPosition(0.85);
-        } else {
             transfer.setPosition(1);
+        } else {
+            transfer.setPosition(0.85);
         }
     }
 
     /**
+     *
      * Handle intake controls (gamepad2 triggers)
      */
     private void handleIntake() {
