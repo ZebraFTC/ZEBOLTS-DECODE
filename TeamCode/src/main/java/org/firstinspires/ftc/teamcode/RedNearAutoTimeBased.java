@@ -52,16 +52,16 @@ public class RedNearAutoTimeBased extends LinearOpMode {
         //THE AUTO ITSELF
         waitForStart();
         driveWhileSpinUp(0.75, -0.5, -0.5, -0.5, -0.5, 0.62, -0.8,1,0.9,0); //drives back at beginning
-        driveWhileSpinUp(4, 0, 0, 0, 0, 0.62, -0.8,1,0.9,0);
-        driveWhileSpinUp(2, 0, 0, 0, 0, 0.62, -0.8,0.85,0.82,0);
+        driveWhileSpinUp(4, 0, 0, 0, 0, 0.72, -0.8,1,0.9,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 0.72, -0.8,0.85,0.7,0);
         driveWhileSpinUp(0.22, 0.5, -0.5, 0.5, -0.5, 0, 0,1,0.9,0); //turns after shooting three balls
         driveWhileSpinUp(0.74, 0.5, -0.5, -0.5, 0.5, 0, 0,1,0.9,0);//straifs to other 3 balls
         driveWhileSpinUp(2.5, 0.25, 0.25, 0.25, 0.25, 0, -0.8,1,0.9,0); //intake next three balls
         driveWhileSpinUp(0.45, -0.5, -0.5, -0.5, -0.5, 0, -0.8,1,0.9,0); //go back after getting three balls
         driveWhileSpinUp(0.26, -0.5, 0.5, -0.5, 0.5, 0.65, -0.8,1,0.9,0); //turns after picking  up three balls
-        driveWhileSpinUp(0.76, -0.5, 0.5, 0.5, -0.5, 0.65, -0.8,1,0.9,0); //straif after turn with three balls
-        driveWhileSpinUp(4, 0, 0, 0, 0, 0.61, -0.8,1,0.9,0);
-        driveWhileSpinUp(2, 0, 0, 0, 0, 0.61, -0.8,0.85,0.82,0);
+        driveWhileSpinUp(0.8, -0.5, 0.5, 0.5, -0.5, 0.65, -0.8,1,0.9,0); //straif after turn with three balls
+        driveWhileSpinUp(4, 0, 0, 0, 0, 0.71, -0.8,1,0.9,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 0.71, -0.8,0.85,0.7,0);
         driveWhileSpinUp(0.75, 0.5, -0.5, -0.5, 0.5, 0, 0,1,0.9,0);
     }
 

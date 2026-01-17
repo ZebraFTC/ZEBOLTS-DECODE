@@ -5,14 +5,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import android.util.Size;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "Zebolts TeleOp with AprilTag", group = "TeleOp")
+@TeleOp(name = "Zebolts TeleOp Fast AprilTag", group = "TeleOp")
 public class ZeboltsTeleOpDecode2 extends LinearOpMode {
 
     // DRIVE MOTORS
@@ -40,12 +48,21 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     private boolean aprilTagTrackingEnabled = false;
     private boolean lastGamepad2A = false;
 
+    // Detection smoothing for fast movement
+    private double lastValidBearing = 0;
+    private long lastDetectionTime = 0;
+    private static final long DETECTION_TIMEOUT_MS = 500;
+
     // Turret configuration constants
     private static final double TURRET_MANUAL_POWER = 0.5;
     private static final double TURRET_ALIGN_POWER = 0.25;
     private static final double BEARING_TOLERANCE = 3.0;
     private static final int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
-    private static final boolean INVERT_TURRET_TRACKING = false; // Set to true if turret turns wrong way during tracking
+
+    // Camera settings for fast motion
+    private static final int CAMERA_EXPOSURE_MS = 6;  // Fast exposure to reduce motion blur
+    private static final int CAMERA_GAIN = 220;        // High gain to compensate for low exposure
+    private static ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -55,7 +72,7 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
         initTurret();
         initAprilTag();
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized - Optimized for Fast Turning");
         telemetry.addData(">", "Press A on gamepad2 to toggle AprilTag tracking");
         telemetry.update();
 
@@ -125,7 +142,6 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
      */
     private void initTurret() {
         turretMotor = hardwareMap.get(DcMotor.class, "turret ring");
-        // Try FORWARD direction first - change to REVERSE if it turns the wrong way
         turretMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -133,19 +149,77 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     }
 
     /**
-     * Initialize AprilTag detection
+     * Initialize AprilTag detection - OPTIMIZED FOR FAST TURNING
      */
     private void initAprilTag() {
+        // Build AprilTag processor with optimized settings
         aprilTag = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagOutline(true)
+                .setDrawAxes(false)  // Disable drawing for faster processing
+                .setDrawCubeProjection(false)
+                .setDrawTagOutline(false)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)  // More robust detection
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .build();
 
+        // Build vision portal with optimized settings
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(aprilTag)
+                .setCameraResolution(new Size(640, 480))  // Lower resolution = faster processing
+                .enableLiveView(false)  // Disable live view for better performance
+                .setAutoStopLiveView(true)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
+
+        // Wait for camera to start streaming
+        telemetry.addData("Camera", "Initializing...");
+        telemetry.update();
+
+        while (opModeInInit() && visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            sleep(20);
+            telemetry.addData("Camera", "Waiting... %s", visionPortal.getCameraState());
+            telemetry.update();
+        }
+
+        // Configure camera for fast motion detection
+        configureCameraForFastMotion();
+
+        telemetry.addData("Camera", "Ready!");
+        telemetry.update();
+    }
+
+    /**
+     * Configure camera settings to reduce motion blur during fast turning
+     */
+    private void configureCameraForFastMotion() {
+        try {
+            // Set manual exposure for fast shutter speed (reduces motion blur)
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl != null) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+                exposureControl.setExposure(CAMERA_EXPOSURE_MS, TimeUnit.MILLISECONDS);
+                telemetry.addData("Exposure", "Set to %d ms", CAMERA_EXPOSURE_MS);
+            } else {
+                telemetry.addData("Exposure", "Not available");
+            }
+
+            // Increase gain to compensate for fast exposure (brightens image)
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            if (gainControl != null) {
+                gainControl.setGain(CAMERA_GAIN);
+                telemetry.addData("Gain", "Set to %d", CAMERA_GAIN);
+            } else {
+                telemetry.addData("Gain", "Not available");
+            }
+
+            telemetry.addData("Camera Config", "Optimized for fast motion");
+            telemetry.update();
+            sleep(1000);
+
+        } catch (Exception e) {
+            telemetry.addData("Camera Config Error", e.getMessage());
+            telemetry.update();
+        }
     }
 
     /**
@@ -170,19 +244,16 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     private void handleShooter() {
         if (gamepad1.dpad_up) {
             // Close range shot
-            bottomshooter.setPower(-0.51);
-            hood.setPosition(1);
-            intake.setPower(-0.8);
+            bottomshooter.setPower(-0.61);
+            hood.setPosition(0.95);
         } else if (gamepad1.dpad_right) {
             // Medium range shot
-            bottomshooter.setPower(-0.56);
-            hood.setPosition(0.75);
-            intake.setPower(-0.5);
+            bottomshooter.setPower(-0.68);
+            hood.setPosition(0.7);
         } else if (gamepad1.dpad_down) {
             // Long range shot
-            bottomshooter.setPower(-0.78);
+            bottomshooter.setPower(-0.95);
             hood.setPosition(0.65);
-            intake.setPower(-0.4);
         } else if (gamepad1.dpad_left) {
             // Stop shooter
             bottomshooter.setPower(0);
@@ -195,14 +266,34 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
      * Handle transfer servo (gamepad1 right trigger)
      */
     private void handleTransfer() {
-        if (gamepad1.right_trigger == 0) {
+        if (gamepad1.left_bumper) {
             transfer.setPosition(0.85);
+            shootClose(500);
+            transfer.setPosition(1);
         } else {
             transfer.setPosition(1);
+
+        }
+    }
+    private void shootClose(long waitDurationMilli) {
+        timer.reset();
+        long startTime = System.currentTimeMillis();
+        long waitDuration = waitDurationMilli; // Wait for 3 seconds
+        long elapsedTime = 0;
+        while (elapsedTime < waitDuration) {
+            elapsedTime = System.currentTimeMillis() - startTime;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 
+
     /**
+     *
      * Handle intake controls (gamepad2 triggers)
      */
     private void handleIntake() {
@@ -220,8 +311,8 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
      */
     private void handleTurret() {
         if (aprilTagTrackingEnabled) {
-            // APRILTAG TRACKING MODE
-            trackAprilTag();
+            // APRILTAG TRACKING MODE - with smoothing for fast turns
+            trackAprilTagWithSmoothing();
         } else {
             // MANUAL CONTROL MODE (gamepad2 left stick X)
             double turret = gamepad2.left_stick_x;
@@ -230,14 +321,24 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
     }
 
     /**
-     * Track AprilTag and adjust turret to keep it centered
+     * Track AprilTag with smoothing to handle fast turning
      */
-    private void trackAprilTag() {
+    private void trackAprilTagWithSmoothing() {
         List<AprilTagDetection> detections = aprilTag.getDetections();
+        long currentTime = System.currentTimeMillis();
 
         if (detections.size() == 0) {
-            // No tag detected - stop turret
-            turretMotor.setPower(0);
+            // No tag detected - use last known bearing if recent
+            if (currentTime - lastDetectionTime < DETECTION_TIMEOUT_MS) {
+                // Continue tracking with last known position at reduced power
+                double adjustPower = lastValidBearing / 18.0;
+                adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower));
+                turretMotor.setPower(adjustPower * 0.5);  // 50% power when using old data
+                telemetry.addData("Tracking Mode", "Using last known position");
+            } else {
+                turretMotor.setPower(0);
+                telemetry.addData("Tracking Mode", "No tag detected");
+            }
             return;
         }
 
@@ -258,25 +359,35 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
 
         if (targetDetection == null) {
             turretMotor.setPower(0);
-            return; //658 to -852 HARD STOP
+            return;
         }
 
+        // Update tracking data
         double bearing = targetDetection.ftcPose.bearing;
+        lastValidBearing = bearing;
+        lastDetectionTime = currentTime;
 
-        //Printing Range and WARNING for passing "hardstops"
-        telemetry.addData("Range from target ", targetDetection.ftcPose.range); //Prints range from QR
+        // Display detection info
+        telemetry.addData("Range from target", "%.1f inches", targetDetection.ftcPose.range);
+        telemetry.addData("Bearing", "%.1f degrees", bearing);
+        telemetry.addData("Tracking Mode", "Active detection");
 
-        if (turretMotor.getCurrentPosition() > 658){
-            telemetry.addLine("WARNING: Turret turning to much!");
-        } else if (turretMotor.getCurrentPosition() < -852){
-            telemetry.addLine("WARNING: Turret turning to much!");
+        // Check hard stops
+        int currentPosition = turretMotor.getCurrentPosition();
+        if (currentPosition > 658) {
+            telemetry.addLine("WARNING: Turret at positive limit!");
+            turretMotor.setPower(0);
+            return;
+        } else if (currentPosition < -852) {
+            telemetry.addLine("WARNING: Turret at negative limit!");
+            turretMotor.setPower(0);
+            return;
         }
-
-        telemetry.update();
 
         // Check if centered
         if (Math.abs(bearing) < BEARING_TOLERANCE) {
             turretMotor.setPower(0);
+            telemetry.addData("Status", "ON TARGET");
             return;
         }
 
@@ -285,6 +396,7 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
         adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower));
 
         turretMotor.setPower(adjustPower);
+        telemetry.addData("Status", "Tracking...");
     }
 
     /**
@@ -304,6 +416,10 @@ public class ZeboltsTeleOpDecode2 extends LinearOpMode {
                 telemetry.addData("Bearing", "%.2f degrees", detection.ftcPose.bearing);
                 telemetry.addData("Range", "%.2f inches", detection.ftcPose.range);
             }
+
+            // Show time since last detection
+            long timeSinceDetection = System.currentTimeMillis() - lastDetectionTime;
+            telemetry.addData("Last Detection", "%d ms ago", timeSinceDetection);
         }
 
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());

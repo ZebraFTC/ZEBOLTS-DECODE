@@ -16,11 +16,11 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
     public DcMotor frontright; //Wheel
     public DcMotor backleft; //Wheel
     public DcMotor backright; //Wheel
-    public DcMotor shooter; //Shooting Motor
-    public DcMotor trigger; //The thing that launches the ball into the shooting system
+    public Servo transfer; //The thing that launches the ball into the shooting system
     public DcMotor intake; //The intake
     public DcMotor bottomshooter; //The motors in the chamber
-    public DcMotor topshooter; //The motors in the chamber
+    public Servo hood;
+    public DcMotor turretring;
     private int leftFrontPos;
     private int rightFrontPos;
     private int leftBackPos;
@@ -39,10 +39,11 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class, "front right");
         backleft = hardwareMap.get(DcMotor.class, "back left");
         backright = hardwareMap.get(DcMotor.class, "back right");
-        trigger = hardwareMap.get(DcMotor.class, "transfer");
+        transfer = hardwareMap.get(Servo.class, "transfer");
         intake = hardwareMap.get(DcMotor.class, "intake");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
-        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
+        hood = hardwareMap.get(Servo.class, "angle changer");
+        turretring = hardwareMap.get(DcMotor.class, "turret ring");
 
         //SETTING MOTOR DIRECTIONS
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -50,18 +51,14 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
 
         //THE AUTO ITSELF
         waitForStart();
-        shootClose();
-        driveWhileSpinUp(0.65, 0.5, 0.5, 0.5, 0.5, 0.15, 0, 0);
-        driveWhileSpinUp(0.38, -0.5, 0.5, -0.5, 0.5, 0.15, 0, 0);
-        driveWhileSpinUp(1, 0.5, 0.5, 0.5, 0.5, 0, -1, 0.25);
-        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
-        driveWhileSpinUp(0.23, 0.5, -0.5, 0.5, -0.5, 0, 0, 0);
-        driveWhileSpinUp(0.65, -0.5, -0.5, -0.5, -0.5, 0, 0, 0);
-        shootClose();
+        driveWhileSpinUp(4, 0, 0, 0, 0, 1, -0.8,1,0.65,0);
+        driveWhileSpinUp(2, 0, 0, 0, 0, 1, -0.8,0.85,0.65,0);
+        driveWhileSpinUp(0.22, 0.5, 0.5, 0.5, 0.5, 0, 0,1,0.9,0); //turns after shooting three balls
+
     }
 
     //DRIVE FUNCTION
-    private void driveWhileSpinUp(double time, double flPower, double frPower, double blPower, double brPower, double shooterPower, double intakePower, double triggerPower) {
+    private void driveWhileSpinUp(double time, double flPower, double frPower, double blPower, double brPower, double shooterPower, double intakePower, double transfer1, double hood1, double turretring1) {
         timer.reset();
         while (opModeIsActive() && timer.seconds() < time) {
             frontleft.setPower(flPower);
@@ -69,9 +66,11 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
             frontright.setPower(frPower);
             backright.setPower(brPower);
             intake.setPower(intakePower);
-            trigger.setPower(triggerPower);
-            bottomshooter.setPower(shooterPower);
-            topshooter.setPower(shooterPower);
+            bottomshooter.setPower(-1 * shooterPower);
+            transfer.setPosition(transfer1);
+            hood.setPosition(hood1);
+            turretring.setPower(turretring1);
+
 
         }
         frontleft.setPower(0);
@@ -81,12 +80,10 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
         intake.setPower(0);
     }
 
-    private void shootClose() {
+    private void shootClose(long waitDurationMilli) {
         timer.reset();
-        bottomshooter.setPower(-0.8);
-        topshooter.setPower(-0.8);
         long startTime = System.currentTimeMillis();
-        long waitDuration = 3500; // Wait for 2 seconds
+        long waitDuration = waitDurationMilli; // Wait for 3 seconds
         long elapsedTime = 0;
         while (elapsedTime < waitDuration) {
             elapsedTime = System.currentTimeMillis() - startTime;
@@ -97,21 +94,6 @@ public class BlueFarAutoTimeBased extends LinearOpMode {
                 break;
             }
         }
-        while (opModeIsActive() && timer.seconds() < 6.5) {
-            intake.setPower(-0.5);
-            trigger.setPower(0.5);
-        }
-        intake.setPower(0);
-        trigger.setPower(0);
-        bottomshooter.setPower(0);
-        topshooter.setPower(0);
-    }
-    private void intake() {
-        while (opModeIsActive() && timer.seconds() < 0.3) {
-            frontleft.setPower(-0.5);
-            backleft.setPower(-0.5);
-            frontright.setPower(0.5);
-            backright.setPower(0.5);
-        }
     }
 }
+

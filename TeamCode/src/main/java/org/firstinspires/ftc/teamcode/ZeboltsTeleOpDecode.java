@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -60,6 +62,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     // Camera settings for fast motion
     private static final int CAMERA_EXPOSURE_MS = 6;  // Fast exposure to reduce motion blur
     private static final int CAMERA_GAIN = 220;        // High gain to compensate for low exposure
+    private static ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -241,19 +244,16 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private void handleShooter() {
         if (gamepad1.dpad_up) {
             // Close range shot
-            bottomshooter.setPower(-0.61);
-            hood.setPosition(0.95);
-            intake.setPower(-0.8);
+            bottomshooter.setPower(-0.82);
+            hood.setPosition(0.6);
         } else if (gamepad1.dpad_right) {
             // Medium range shot
-            bottomshooter.setPower(-0.68);
-            hood.setPosition(0.7);
-            intake.setPower(-0.5);
+            bottomshooter.setPower(-0.91);
+            hood.setPosition(0.6);
         } else if (gamepad1.dpad_down) {
             // Long range shot
-            bottomshooter.setPower(-0.95);
+            bottomshooter.setPower(-0.96);
             hood.setPosition(0.65);
-            intake.setPower(-0.4);
         } else if (gamepad1.dpad_left) {
             // Stop shooter
             bottomshooter.setPower(0);
@@ -266,12 +266,31 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
      * Handle transfer servo (gamepad1 right trigger)
      */
     private void handleTransfer() {
-        if (gamepad1.right_trigger == 0) {
+        if (gamepad1.left_bumper) {
+            transfer.setPosition(0.85);
+            shootClose(500);
             transfer.setPosition(1);
         } else {
-            transfer.setPosition(0.85);
+            transfer.setPosition(1);
+
         }
     }
+    private void shootClose(long waitDurationMilli) {
+        timer.reset();
+        long startTime = System.currentTimeMillis();
+        long waitDuration = waitDurationMilli; // Wait for 3 seconds
+        long elapsedTime = 0;
+        while (elapsedTime < waitDuration) {
+            elapsedTime = System.currentTimeMillis() - startTime;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
 
     /**
      *
