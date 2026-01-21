@@ -58,7 +58,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private static final double TURRET_MANUAL_POWER = 0.5;
     private static final double TURRET_ALIGN_POWER = 0.25;
     private static final double BEARING_TOLERANCE = 3.0;
-    private static final int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
+    private static int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
 
     // Camera settings for fast motion
     private static final int CAMERA_EXPOSURE_MS = 6;  // Fast exposure to reduce motion blur
@@ -273,6 +273,12 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
 
             powerLevel = "None";
         }
+
+        if (gamepad2.x){
+            TARGET_TAG_ID = 20;
+        } else if (gamepad2.b){
+            TARGET_TAG_ID = 24;
+        }
     }
 
     /**
@@ -448,7 +454,10 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
         telemetry.addData("", "");
         telemetry.addData("Controls", "Gamepad2 A = Toggle AprilTag");
+        telemetry.addData("Controls", "Gamepad2 B = Track Red Base");
+        telemetry.addData("Controls", "Gamepad2 X = Track Blue Base");
         telemetry.addData("Shooter Power", powerLevel);
+        telemetry.addData("Target April Tag ID", TARGET_TAG_ID);
 
         telemetry.update();
     }

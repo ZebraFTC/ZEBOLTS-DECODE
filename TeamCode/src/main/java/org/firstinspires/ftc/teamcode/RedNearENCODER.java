@@ -30,15 +30,7 @@ public class RedNearENCODER extends LinearOpMode {
     private int rightFrontPos;
     private int leftBackPos;
     private int rightBackPos;
-    private int shooterPos;
-    private int intakePos;
-    private int topShooterPos;
-    private int triggerPos;
     public DcMotor turretring;
-
-
-    private ElapsedTime timer = new ElapsedTime();
-
 
     @Override
     public void runOpMode() {
@@ -72,42 +64,30 @@ public class RedNearENCODER extends LinearOpMode {
         rightFrontPos = 0;
         leftBackPos = 0;
         rightBackPos = 0;
-        shooterPos = 0;
-        intakePos = 0;
-        topShooterPos = 0;
 
 
 
         //THE AUTO ITSELF
-        waitForStart();
-        drive(-800, -800, -800, -800, 0.5,0,0.5);
-        shoot(0.5, 4, -1, 1, 0.95, 0);
-        shoot(0.5, 2, -1, 0.85, 0.95, 0);
-        drive(200,200,-200,-200,0.4,0,0);
-        drive(-300,300,300,-300,0.5,0,0);
-        drive(600,600,600,600,0.3,-0.5,0);
-
-
+        waitForStart(); //Hrithik we can run the shoot method to intake and not shoot if desired
 
         //Shooting Preloaded Balls
-        //drive(-800, -800, -800, -800, 0.5);//Drives backwards
-        //drive(300,300,-300,-300,0.4);//Turns right
-        //shoot(0.5, 3, 1, 1, 0.95, 0); //Shoots preloaded balls
+        drive(-888, -888, -888, -888, 0.5);//Drives backwards
+        shoot(0.4, 3, 1, 1, 0.95, 0); //Shoots preloaded balls
 
         //Intaking 3 Balls
-        //drive(-1200, -1200, -1200, -1200, 0.5);//Drives backwards
-        //drive(300,300,-300,-300,0.4);//Turns right
-        //shoot(0, 5, 1, 0, 0.95, 0);     //Turns on Intake
-        //drive(1000,1000,1000,1000,0.3);        //Drives forwards
+        drive(-400, -400, -400, -400, 0.5);//Drives backwards
+        drive(900,900,-900,-900,0.4);//Turns right
+        shoot(0, 5, 1, 0, 0.95, 0);     //Turns on Intake
+        drive(1000,1000,1000,1000,0.3);        //Drives forwards
 
         //Shoots the 3 Balls
-        //drive(-1000,-1000,-1000,-1000,0.3);        //Drives backwards
-        //drive(-300,-300,300,300,0.4);//Turns left
-        //shoot(0.7, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
+        drive(-1000,-1000,-1000,-1000,0.3);        //Drives backwards
+        drive(-900,-900,900,900,0.4);//Turns left
+        shoot(0.6, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
 
 
         //Gets out of the square
-        //drive(-1000,-1000,-1000,-1000,0.3);        //Drives backwards
+        drive(-100,-100,-100,-100,0.3);        //Drives backwards
 
        /*
        --TEMPLATES--
@@ -126,7 +106,7 @@ public class RedNearENCODER extends LinearOpMode {
 
 
     //DRIVE FUNCTION
-    private void drive(int leftBackTarget, int leftFrontTarget, int rightBackTarget, int rightFrontTarget, double speed, double intakes, double shooterPowers) {
+    private void drive(int leftBackTarget, int leftFrontTarget, int rightBackTarget, int rightFrontTarget, double speed) {
         leftBackPos += leftBackTarget;
         leftFrontPos += leftFrontTarget;
         rightBackPos += rightBackTarget;
@@ -149,9 +129,6 @@ public class RedNearENCODER extends LinearOpMode {
         backleft.setPower(speed);
         frontright.setPower(speed);
         backright.setPower(speed);
-        intake.setPower(intakes);
-        bottomshooter.setPower((-1 * shooterPowers));
-        topshooter.setVelocity(1 * 2800 * shooterPowers);
 
 
         while (opModeIsActive() && frontleft.isBusy() && backleft.isBusy() && frontright.isBusy() && backright.isBusy()) {
