@@ -20,7 +20,7 @@ import android.util.Size;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "Zebolts TeleOp Fast AprilTag", group = "TeleOp")
+@TeleOp(name = "REAL CODE IGNORE OTHERS", group = "TeleOp")
 public class ZeboltsTeleOpDecode extends LinearOpMode {
 
     // DRIVE MOTORS
@@ -31,6 +31,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
 
     // SHOOTER MOTORS
     public DcMotor bottomshooter;
+    public DcMotor topshooter;
     public DcMotor intake;
 
     // SERVOS
@@ -64,6 +65,8 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private static final int CAMERA_GAIN = 220;        // High gain to compensate for low exposure
     private static ElapsedTime timer = new ElapsedTime();
 
+    //String for Range
+    private String powerLevel = "";
     @Override
     public void runOpMode() throws InterruptedException {
         // INITIALIZE HARDWARE
@@ -132,6 +135,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
      */
     private void initShooterSystem() {
         intake = hardwareMap.get(DcMotor.class, "intake");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
         hood = hardwareMap.get(Servo.class, "angle changer");
         transfer = hardwareMap.get(Servo.class, "transfer");
@@ -230,8 +234,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         double turn = gamepad1.right_stick_x;
         double strafe = gamepad1.left_stick_x;
 
-        double speedMultiplier = gamepad1.right_bumper ? 0.5 : 1.0;
-
+        double speedMultiplier = 1; //gamepad1.right_bumper ? 0.5 : 1.0;
         frontleft.setPower(-(drive - turn - strafe) * speedMultiplier);
         frontright.setPower((-drive - turn - strafe) * speedMultiplier);
         backleft.setPower(-(drive - turn + strafe) * speedMultiplier);
@@ -242,23 +245,33 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
      * Handle shooter controls (gamepad1 D-pad)
      */
     private void handleShooter() {
-        if (gamepad1.dpad_up) {
+        if (gamepad1.left_trigger > 0.1) {
             // Close range shot
-            bottomshooter.setPower(-0.82);
-            hood.setPosition(0.6);
-        } else if (gamepad1.dpad_right) {
+            topshooter.setPower(0.49);
+            bottomshooter.setPower(-0.49);
+            hood.setPosition(0.95);
+
+            powerLevel = "Low";
+        } else if (gamepad1.left_bumper) {
             // Medium range shot
-            bottomshooter.setPower(-0.91);
+            topshooter.setPower(0.57);
+            bottomshooter.setPower(-0.57);
+            hood.setPosition(0.75);
+
+            powerLevel = "Medium";
+        } else if (gamepad1.right_bumper) {
+            topshooter.setPower(0.77);
+            bottomshooter.setPower(-0.8);
             hood.setPosition(0.6);
-        } else if (gamepad1.dpad_down) {
-            // Long range shot
-            bottomshooter.setPower(-0.96);
-            hood.setPosition(0.65);
-        } else if (gamepad1.dpad_left) {
+
+            powerLevel = "High";
+        } else if (gamepad1.x) {
             // Stop shooter
             bottomshooter.setPower(0);
-            hood.setPosition(1);
-            intake.setPower(0);
+            topshooter.setPower(0);
+            hood.setPosition(0.95);
+
+            powerLevel = "None";
         }
     }
 
@@ -266,7 +279,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
      * Handle transfer servo (gamepad1 right trigger)
      */
     private void handleTransfer() {
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_trigger > 0.1) {
             transfer.setPosition(0.85);
             shootClose(500);
             transfer.setPosition(1);
@@ -372,6 +385,16 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         telemetry.addData("Bearing", "%.1f degrees", bearing);
         telemetry.addData("Tracking Mode", "Active detection");
 
+        /*if (gamepad1.x){
+            if (powerLevel == "Low"){
+                if (targetDetection.ftcPose.range < 53){
+                    //do
+                } elseif (targetDetection.ftcPose.range > MAX VALUE){
+                    //Move forwards
+                }
+            }
+        }*/
+
         // Check hard stops
         int currentPosition = turretMotor.getCurrentPosition();
         if (currentPosition > 658) {
@@ -425,6 +448,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         telemetry.addData("Turret Position", turretMotor.getCurrentPosition());
         telemetry.addData("", "");
         telemetry.addData("Controls", "Gamepad2 A = Toggle AprilTag");
+        telemetry.addData("Shooter Power", powerLevel);
 
         telemetry.update();
     }
