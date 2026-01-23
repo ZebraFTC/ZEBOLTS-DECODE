@@ -85,6 +85,16 @@ public class RedNearENCODER extends LinearOpMode {
         drive(-900,-900,900,900,0.4);//Turns left
         shoot(0.6, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
 
+        //Intakes next set
+        drive(-400, -400, -400, -400, 0.5);//Drives backwards
+        drive(900,900,-900,-900,0.4);//Turns right
+        shoot(0, 5, 1, 0, 0.95, 0);     //Turns on Intake
+        drive(1200,1200,1200,1200,0.3);        //Drives forwards
+
+        //Shoots the next set
+        drive(-1200,-1200,-1200,-1200,0.3);        //Drives backwards
+        drive(-900,-900,900,900,0.4);//Turns left
+        shoot(0.7, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
 
         //Gets out of the square
         drive(-100,-100,-100,-100,0.3);        //Drives backwards

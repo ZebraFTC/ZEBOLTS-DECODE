@@ -247,22 +247,22 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private void handleShooter() {
         if (gamepad1.left_trigger > 0.1) {
             // Close range shot
-            topshooter.setPower(0.49);
-            bottomshooter.setPower(-0.49);
+            topshooter.setPower(-0.6);
+            bottomshooter.setPower(-0.6);
             hood.setPosition(0.95);
 
             powerLevel = "Low";
         } else if (gamepad1.left_bumper) {
             // Medium range shot
-            topshooter.setPower(0.57);
-            bottomshooter.setPower(-0.57);
-            hood.setPosition(0.75);
+            topshooter.setPower(-0.68);
+            bottomshooter.setPower(-0.68);
+            hood.setPosition(0.85);
 
             powerLevel = "Medium";
         } else if (gamepad1.right_bumper) {
-            topshooter.setPower(0.77);
-            bottomshooter.setPower(-0.8);
-            hood.setPosition(0.6);
+            topshooter.setPower(-0.91);
+            bottomshooter.setPower(-0.91);
+            hood.setPosition(0.75);
 
             powerLevel = "High";
         } else if (gamepad1.x) {
