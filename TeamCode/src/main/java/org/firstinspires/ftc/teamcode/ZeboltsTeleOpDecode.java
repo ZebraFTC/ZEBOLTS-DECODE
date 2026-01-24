@@ -57,7 +57,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     // Turret configuration constants
     private static final double TURRET_MANUAL_POWER = 0.5;
     private static final double TURRET_ALIGN_POWER = 0.25;
-    private static final double BEARING_TOLERANCE = 3.0;
+    private static final double BEARING_TOLERANCE = 2.0;
     private static int TARGET_TAG_ID = -1; // -1 for any tag, or specific ID
 
     // Camera settings for fast motion

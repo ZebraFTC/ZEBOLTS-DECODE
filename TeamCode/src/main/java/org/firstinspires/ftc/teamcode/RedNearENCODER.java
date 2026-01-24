@@ -31,6 +31,7 @@ public class RedNearENCODER extends LinearOpMode {
     private int leftBackPos;
     private int rightBackPos;
     public DcMotor turretring;
+    private int turretPos;
 
     @Override
     public void runOpMode() {
@@ -52,6 +53,7 @@ public class RedNearENCODER extends LinearOpMode {
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretring.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         //SETTING MOTOR DIRECTIONS
@@ -64,40 +66,59 @@ public class RedNearENCODER extends LinearOpMode {
         rightFrontPos = 0;
         leftBackPos = 0;
         rightBackPos = 0;
+        turretPos = 0;
 
 
 
         //THE AUTO ITSELF
         waitForStart(); //Hrithik we can run the shoot method to intake and not shoot if desired
 
-        //Shooting Preloaded Balls
-        drive(-888, -888, -888, -888, 0.5);//Drives backwards
-        shoot(0.4, 3, 1, 1, 0.95, 0); //Shoots preloaded balls
+        //SECTION 1: SHOOTING PRELOADED BALLS
+        turnTurret(0.5,-270);
+        drive(-700,-700,-700,-700,0.5);
+        drive(-900,900,900,-900,0.5);
+       //shoot
+        drive(-1600,1600,1600,-1600,0.5);
 
-        //Intaking 3 Balls
-        drive(-400, -400, -400, -400, 0.5);//Drives backwards
-        drive(900,900,-900,-900,0.4);//Turns right
-        shoot(0, 5, 1, 0, 0.95, 0);     //Turns on Intake
-        drive(1000,1000,1000,1000,0.3);        //Drives forwards
+        //SECTION 2: GETTING MORE BALLS
+        //intake
+        drive(800,800,800,800,0.5);
 
-        //Shoots the 3 Balls
-        drive(-1000,-1000,-1000,-1000,0.3);        //Drives backwards
-        drive(-900,-900,900,900,0.4);//Turns left
-        shoot(0.6, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
+        //SECTION 3: OPENING GATE
+        drive(-300,-300,-300,-300,0.5);
+        drive(300,-300,-300,300,0.5);
+        drive(450,450,450,450,0.5);
+        sleep(2000);
 
-        //Intakes next set
-        drive(-400, -400, -400, -400, 0.5);//Drives backwards
-        drive(900,900,-900,-900,0.4);//Turns right
-        shoot(0, 5, 1, 0, 0.95, 0);     //Turns on Intake
-        drive(1200,1200,1200,1200,0.3);        //Drives forwards
+        //SECTION 4: SHOOT AND INTAKE MORE
+        drive(-1300,-1300,-1300,-1300,0.5);
+        drive(700,-700,-700,700,0.5);
+        //shoot
+        //intake
+        drive(1200,1200,1200,1200,0.5);
+        drive(-1000,-1000,-1000,-1000,0.5);
+        drive(600,-600,-600,600,0.5);
+        //shoot
 
-        //Shoots the next set
-        drive(-1200,-1200,-1200,-1200,0.3);        //Drives backwards
-        drive(-900,-900,900,900,0.4);//Turns left
-        shoot(0.7, 3, 1, 1, 0.95, 0); //Shoots intaked ballz
+        //SECTION 5: INTAKE AND SHOOT THE LAST SET
+        drive(-2300,2300,2300,-2300,0.5);
+        //intake
+        drive(1000,1000,1000,1000,0.5);
+        drive(-1000,-1000,-1000,-1000,0.5);
+        drive(1500,-1500,-1500,1500,0.5);
+        //shoot
 
-        //Gets out of the square
-        drive(-100,-100,-100,-100,0.3);        //Drives backwards
+
+
+
+
+
+
+
+
+
+
+
 
        /*
        --TEMPLATES--
@@ -134,6 +155,10 @@ public class RedNearENCODER extends LinearOpMode {
         frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontleft.setPower(speed);
         backleft.setPower(speed);
@@ -144,24 +169,27 @@ public class RedNearENCODER extends LinearOpMode {
         while (opModeIsActive() && frontleft.isBusy() && backleft.isBusy() && frontright.isBusy() && backright.isBusy()) {
             idle();
         }
+
+        sleep(500);
     }
 
     //Shooting method
-    private void shoot(double shooterPower, long time, double intakePower, double ballBooterPOS, double hoodPOS, double turretringPWR) {
+    private void shoot(double shooterPower, long time, double intakePower, double ballBooterPOS, double hoodPOS) {
         intake.setPower(intakePower);
         bottomshooter.setPower((-1 * shooterPower));
         topshooter.setVelocity(1 * 2800 * shooterPower);
         ballBooter.setPosition(ballBooterPOS);
         hood.setPosition(hoodPOS);
-        turretring.setPower(turretringPWR);
-
-        sleep(time * 1000);
-
-        bottomshooter.setPower(0);
-        topshooter.setPower(0);
-        intake.setPower(0);
-        turretring.setPower(0);
     }
 
+    private void turnTurret(double turretSpeed, int turretTarget){
+        turretPos += turretTarget;
+        turretring.setTargetPosition(turretPos);
+        turretring.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretring.setPower(turretSpeed);
 
+        while (opModeIsActive() && turretring.isBusy()){
+            idle();
+        }
+    }
 }
