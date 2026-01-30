@@ -32,6 +32,7 @@ public class RedNearENCODER extends LinearOpMode {
     private int rightBackPos;
     public DcMotor turretring;
     private int turretPos;
+    private static ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -71,46 +72,49 @@ public class RedNearENCODER extends LinearOpMode {
 
 
         //THE AUTO ITSELF
-        waitForStart(); //Hrithik we can run the shoot method to intake and not shoot if desired
+        waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        turnTurret(0.5,-270);
-        drive(-700,-700,-700,-700,0.5);
-        drive(-900,900,900,-900,0.5);
-       //shoot
-        drive(-1600,1600,1600,-1600,0.5);
+        shooter(0.54);
+        turnTurret(0.5,-110);
+        drive(-700,-700,-700,-700,0.4);
+        drive(-900,900,900,-900,0.4);
+        shoot(0.52,1.5,0,1,0.95);
+        shoot(0.52,2,1,0.85,0.95);
+        shooter(0);
+        shoot(0,0.1,0,1,0.95);
+        drive(35,35,-35,-35,0.25);
+        drive(-800,800,800,-800,0.4);
 
-        //SECTION 2: GETTING MORE BALLS
-        //intake
-        drive(800,800,800,800,0.5);
-
-        //SECTION 3: OPENING GATE
-        drive(-300,-300,-300,-300,0.5);
-        drive(300,-300,-300,300,0.5);
-        drive(450,450,450,450,0.5);
-        sleep(2000);
-
-        //SECTION 4: SHOOT AND INTAKE MORE
-        drive(-1300,-1300,-1300,-1300,0.5);
-        drive(700,-700,-700,700,0.5);
-        //shoot
-        //intake
-        drive(1200,1200,1200,1200,0.5);
-        drive(-1000,-1000,-1000,-1000,0.5);
-        drive(600,-600,-600,600,0.5);
-        //shoot
-
-        //SECTION 5: INTAKE AND SHOOT THE LAST SET
-        drive(-2300,2300,2300,-2300,0.5);
-        //intake
-        drive(1000,1000,1000,1000,0.5);
-        drive(-1000,-1000,-1000,-1000,0.5);
-        drive(1500,-1500,-1500,1500,0.5);
-        //shoot
+        //SECTION 2: THE GATE OPENER
+        intake(1);
+        drive(1200,1200,1200,1200,0.25);
+        drive(-800,-800,-800,-800,0.4);
+        intake(0);
+        drive(-500,500,500,-500,0.4);
+        drive(1200,1200,1200,1200,0.25);
+        drive(-1200,-1200,-1200,-1200,0.4);
+        drive(1050,-1050,-1050,1050,0.4);
+        shoot(0.54,1.5,0,1,0.95);
+        shoot(0.54,2,1,0.85,0.95);
+        shooter(0);
+        shoot(0,0.1,0,1,0.95);
 
 
-
-
+        /*
+        //SECTION 4: MORE INTAKE AND SHOTS
+        drive(-1350,1350,1350,-1350,0.4);
+        intake(1);
+        drive(1200,1200,1200,1200,0.25);
+        drive(-800,-800,-800,-800,0.4);
+        drive(-1350,1350,1350,-1350,0.4);
+        intake(0);
+        turnTurret(0.5,-100);
+        shoot(0.9,1.5,0,1,0.95);
+        shoot(0.9,2,1,0.85,0.95);
+        shooter(0);
+        shoot(0,0.1,0,1,0.95);
+        */
 
 
 
@@ -169,17 +173,18 @@ public class RedNearENCODER extends LinearOpMode {
         while (opModeIsActive() && frontleft.isBusy() && backleft.isBusy() && frontright.isBusy() && backright.isBusy()) {
             idle();
         }
-
-        sleep(500);
     }
 
     //Shooting method
-    private void shoot(double shooterPower, long time, double intakePower, double ballBooterPOS, double hoodPOS) {
-        intake.setPower(intakePower);
-        bottomshooter.setPower((-1 * shooterPower));
-        topshooter.setVelocity(1 * 2800 * shooterPower);
-        ballBooter.setPosition(ballBooterPOS);
-        hood.setPosition(hoodPOS);
+    private void shoot(double shooterPower, double time, double intakePower, double ballBooterPOS, double hoodPOS) {
+        timer.reset();
+        while (opModeIsActive() && timer.seconds() < time) {
+            intake.setPower(-1 * intakePower);
+            bottomshooter.setPower((-1 * shooterPower));
+            topshooter.setVelocity(-1 * 2800 * shooterPower);
+            ballBooter.setPosition(ballBooterPOS);
+            hood.setPosition(hoodPOS);
+        }
     }
 
     private void turnTurret(double turretSpeed, int turretTarget){
@@ -191,5 +196,12 @@ public class RedNearENCODER extends LinearOpMode {
         while (opModeIsActive() && turretring.isBusy()){
             idle();
         }
+    }
+    private void shooter(double shooterSpeed){
+        bottomshooter.setPower((-1 * shooterSpeed));
+        topshooter.setVelocity(- 1 * 2800 * shooterSpeed);
+    }
+    private void intake(double intakeSpeed){
+        intake.setPower(-1 * intakeSpeed);
     }
 }

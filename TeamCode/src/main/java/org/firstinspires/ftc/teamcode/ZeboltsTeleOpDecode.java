@@ -37,6 +37,8 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     // SERVOS
     public Servo transfer;
     public Servo hood;
+    public Servo brake1;
+    public Servo brake2;
 
     // TURRET
     public DcMotor turretMotor;
@@ -139,6 +141,8 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
         hood = hardwareMap.get(Servo.class, "angle changer");
         transfer = hardwareMap.get(Servo.class, "transfer");
+        brake1 = hardwareMap.get(Servo.class, "brake 1");
+        brake2 = hardwareMap.get(Servo.class, "brake 2");
     }
 
     /**
@@ -293,6 +297,14 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             transfer.setPosition(1);
 
         }
+        if (gamepad1.dpad_up) {
+            brake1.setPosition(0.2);
+            brake2.setPosition(0.2);
+        } else {
+            brake1.setPosition(0);
+            brake2.setPosition(0);
+        }
+
     }
     private void shootClose(long waitDurationMilli) {
         timer.reset();
