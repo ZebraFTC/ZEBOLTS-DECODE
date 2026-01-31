@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous
-public class RedNearENCODER extends LinearOpMode {
+public class BlueNearENCODER extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -75,30 +75,32 @@ public class RedNearENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        shooter(0.54);
-        turnTurret(0.5,-110);
-        drive(-700,-700,-700,-700,0.4);
-        drive(-900,900,900,-900,0.4);
-        shoot(0.52,1.5,0,1,0.95);
-        shoot(0.52,2,1,0.85,0.95);
+        shooter(0.51);
+        turnTurret(0.5,140);
+        drive(-600,-600,-600,-600,0.4);
+        drive(900,-900,-900,900,0.4); //Strafe
+        shoot(0.5,1.5,0,1,0.77);
+        shoot(0.5,2,1,0.85,0.77);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(35,35,-35,-35,0.25);
-        drive(-800,800,800,-800,0.4);
+        drive(-35,-35,35,35,0.25); //Turns
+        drive(800,-800,-800,800,0.4); //Strafe
 
         //SECTION 2: THE GATE OPENER
         intake(1);
-        drive(1200,1200,1200,1200,0.25);
+        drive(1800,1800,1800,1800,0.2);
         drive(-800,-800,-800,-800,0.4);
         intake(0);
-        drive(-500,500,500,-500,0.4);
-        //drive(1200,1200,1200,1200,0.25); gate in
-        //drive(-1200,-1200,-1200,-1200,0.4); gate out
-        drive(1050,-1050,-1050,1050,0.4);
-        shoot(0.54,1.5,0,1,0.95);
-        shoot(0.54,2,1,0.85,0.95);
+        drive(500,-500,-500,500,0.4); //strafe
+        //drive(1200,1200,1200,1200,0.25); gate open
+        //drive(-1200,-1200,-1200,-1200,0.4); GATE CLOSE
+        drive(-1000,1000,1000,-1000,0.4); //strafe
+        turnTurret(0.5,270);
+        shoot(0.58,1.5,0,1,0.77);
+        shoot(0.58,2,1,0.85,0.77);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
+        drive(800,-800,-800,800,0.4); //Strafe
 
 
         /*
