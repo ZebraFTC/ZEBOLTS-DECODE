@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous
-public class BlueNearENCODER extends LinearOpMode {
+public class RedFarENCODER extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -75,47 +75,33 @@ public class BlueNearENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        shooter(0.55);
-        turnTurret(0.5,132);
-        drive(-650,-650,-650,-650,0.4);
-        drive(900,-900,-900,900,0.4);
-        shoot(0.55,1.5,0,1,0.95);
-        shoot(0.55,2,1,0.85,0.95);
+        turnTurret(0.5,175);
+        shoot(0.79,4,0,1,0.75);
+        shoot(0.79,2,1,0.85,0.75);
         shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(850,-850,-850,850,0.4);
-        drive(-30,-30,30,30,0.4);
-
-
-        //SECTION 2: THE GATE OPENER
+        shoot(0,0.1,0,1,0.75);
+        drive(700,700,700,700,0.4);
+        drive(565,565,-565,-565,0.4);
         intake(1);
-        drive(1500,1500,1500,1500,0.25);
-        drive(-900,-900,-900,-900,0.4);
-        intake(0);
-        //drive(1200,1200,1200,1200,0.25); gate in
-        //drive(-1200,-1200,-1200,-1200,0.4); gate out
-        drive(-800,800,800,-800,0.4);
-        turnTurret(0.5,140);
-        shoot(0.49,1.5,0,1,0.95);
-        shoot(0.49,2,1,0.85,0.95);
+        drive(1800,1800,1800,1800,0.3);
+        drive(-1300,-1300,-1300,-1300,0.4);
+        drive(-570,-570,570,570,0.4);
+        drive(-1000,-1000,-1000,-1000,0.3);
+        shoot(0.78,4,0,1,0.75);
+        shoot(0.78,2,1,0.85,0.75);
         shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(1500,-1500,-1500,1500,0.4);
-        drive(-30,-30,30,30,0.4);
-
+        shoot(0,0.1,0,1,0.75);
+        drive(1400,1400,1400,1400,0.4);
+        drive(540,540,-540,-540,0.4);
         intake(1);
-        drive(1500,1500,1500,1500,0.25);
-        drive(-1350,-1350,-1350,-1350,0.4);
-        intake(0);
-        drive(50,50,-50,-50,0.4);
+        drive(1800,1800,1800,1800,0.3);
+        drive(-1000,-1000,-1000,-1000,0.4);
 
-        drive(-1600,1600,1600,-1600,0.4);
-        shoot(0.48,1.5,0,1,0.95);
-        shoot(0.48,2,1,0.85,0.95);
-        shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(-30,-30,30,30,0.25);
-        drive(800,-800,-800,800,0.4);
+
+
+
+
+
 
 
 
