@@ -92,7 +92,7 @@ public class RedFarENCODER extends LinearOpMode {
         shooter(0);
         shoot(0,0.1,0,1,0.75);
         drive(1400,1400,1400,1400,0.4);
-        drive(540,540,-540,-540,0.4);
+        drive(560,560,-560,-560,0.4);
         intake(1);
         drive(1800,1800,1800,1800,0.3);
         drive(-1000,-1000,-1000,-1000,0.4);
