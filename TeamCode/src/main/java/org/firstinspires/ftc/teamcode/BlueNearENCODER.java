@@ -93,7 +93,7 @@ public class BlueNearENCODER extends LinearOpMode {
         //drive(1200,1200,1200,1200,0.25); gate in
         //drive(-1200,-1200,-1200,-1200,0.4); gate out
         drive(-850,850,850,-850,0.4);
-        turnTurret(0.5,150);
+        turnTurret(0.5,155);
         shoot(0.47,1.5,0,1,0.95);
         shoot(0.47,2,1,0.85,0.95);
         shooter(0);
@@ -108,8 +108,8 @@ public class BlueNearENCODER extends LinearOpMode {
         drive(100,100,-100,-100,0.4);
 
         drive(-1600,1600,1600,-1600,0.4);
-        shoot(0.47,1.5,0,1,0.95);
-        shoot(0.47,2,1,0.85,0.95);
+        shoot(0.46,1.5,0,1,0.95);
+        shoot(0.46,2,1,0.85,0.95);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
         drive(-30,-30,30,30,0.25);
