@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous
-public class BlueNearENCODER extends LinearOpMode {
+public class BlueFarENCODER6 extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -75,45 +75,34 @@ public class BlueNearENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        shooter(0.54);
-        turnTurret(0.5,132);
+        turnTurret(0.5,-158);
+        shoot(0.8,4,0,1,0.75);
+        shoot(0.8,2,1,0.85,0.75);
+        shooter(0);
+        shoot(0,0.1,0,1,0.75);
+        drive(200,200,200,200,0.3);
+        drive(500,-500,-500,500,0.4);
+        drive(-600,-600,600,600,0.3);
+        drive(800,-800,-800,800,0.4);
+        drive(-200,200,200,-200,0.4);
+        intake(1);
+        shooter(0.8);
+        drive(1700,1700,1700,1700,0.4);
         drive(-600,-600,-600,-600,0.4);
-        drive(900,-900,-900,900,0.4);
-        shoot(0.54,1.5,0,1,0.95);
-        shoot(0.54,2,1,0.85,0.95);
+        drive(200,-200,-200,200,0.4);
+        drive(700,700,700,700,0.4);
+        drive(-1400,-1400,-1400,-1400,0.4);
+        turnTurret(0.5,660);
+        shoot(0.8,2,1,0.85,0.75);
+        drive(800,800,800,800,0.4);
         shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(850,-850,-850,850,0.4);
-        drive(-30,-30,30,30,0.4);
 
-        intake(1);
-        drive(1500,1500,1500,1500,0.25);
-        drive(-900,-900,-900,-900,0.4);
-        intake(0);
-        //drive(1200,1200,1200,1200,0.25); gate in
-        //drive(-1200,-1200,-1200,-1200,0.4); gate out
-        drive(-850,850,850,-850,0.4);
-        turnTurret(0.5,155);
-        shoot(0.47,1.5,0,1,0.95);
-        shoot(0.47,2,1,0.85,0.95);
-        shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(-30,-30,30,30,0.4);
-        drive(1600,-1600,-1600,1600,0.4);
 
-        intake(1);
-        drive(1500,1500,1500,1500,0.25);
-        drive(-1350,-1350,-1350,-1350,0.4);
-        intake(0);
-        drive(100,100,-100,-100,0.4);
 
-        drive(-1600,1600,1600,-1600,0.4);
-        shoot(0.46,1.5,0,1,0.95);
-        shoot(0.46,2,1,0.85,0.95);
-        shooter(0);
-        shoot(0,0.1,0,1,0.95);
-        drive(-30,-30,30,30,0.25);
-        drive(900,-900,-900,900,0.4);
+
+
+
+
 
 
 
@@ -162,15 +151,10 @@ public class BlueNearENCODER extends LinearOpMode {
 
     //DRIVE FUNCTION
     private void drive(int leftBackTarget, int leftFrontTarget, int rightBackTarget, int rightFrontTarget, double speed) {
-        frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontleft.setTargetPosition(leftFrontTarget);
-        backleft.setTargetPosition(leftBackTarget);
-        frontright.setTargetPosition(rightFrontTarget);
-        backright.setTargetPosition(rightBackTarget);
+        leftBackPos += leftBackTarget;
+        leftFrontPos += leftFrontTarget;
+        rightBackPos += rightBackTarget;
+        rightFrontPos += rightFrontTarget;
 
 
         frontleft.setTargetPosition(leftFrontPos);
@@ -195,10 +179,8 @@ public class BlueNearENCODER extends LinearOpMode {
         backright.setPower(speed);
 
 
-        while (opModeIsActive() && frontleft.isBusy() || backleft.isBusy() || frontright.isBusy() || backright.isBusy()) {
+        while (opModeIsActive() && frontleft.isBusy() && backleft.isBusy() && frontright.isBusy() && backright.isBusy()) {
             idle();
-
-            sleep(50);
         }
     }
 
@@ -211,7 +193,6 @@ public class BlueNearENCODER extends LinearOpMode {
             topshooter.setVelocity(-1 * 2800 * shooterPower);
             ballBooter.setPosition(ballBooterPOS);
             hood.setPosition(hoodPOS);
-            sleep(75);
         }
     }
 
@@ -219,7 +200,6 @@ public class BlueNearENCODER extends LinearOpMode {
         turretPos += turretTarget;
         turretring.setTargetPosition(turretPos);
         turretring.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretring.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretring.setPower(turretSpeed);
 
         while (opModeIsActive() && turretring.isBusy()){

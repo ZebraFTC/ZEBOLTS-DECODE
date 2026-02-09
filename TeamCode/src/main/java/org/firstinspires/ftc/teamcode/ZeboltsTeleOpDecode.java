@@ -258,15 +258,15 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             powerLevel = "Low";
         } else if (gamepad1.left_bumper) {
             // Medium range shot
-            topshooter.setPower(-0.68);
-            bottomshooter.setPower(-0.68);
-            hood.setPosition(0.85);
+            topshooter.setPower(-0.72);
+            bottomshooter.setPower(-0.72);
+            hood.setPosition(0.75);
 
             powerLevel = "Medium";
         } else if (gamepad1.right_bumper) {
-            topshooter.setPower(-0.91);
-            bottomshooter.setPower(-0.91);
-            hood.setPosition(0.75);
+            topshooter.setPower(-0.94);
+            bottomshooter.setPower(-0.94);
+            hood.setPosition(0.73);
 
             powerLevel = "High";
         } else if (gamepad1.x) {
@@ -291,8 +291,6 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
     private void handleTransfer() {
         if (gamepad1.right_trigger > 0.1) {
             transfer.setPosition(0.85);
-            shootClose(500);
-            transfer.setPosition(1);
         } else {
             transfer.setPosition(1);
 
@@ -433,7 +431,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
         }
 
         // Proportional control for smooth tracking
-        double adjustPower = bearing / 18.0;
+        double adjustPower = bearing / 25.0;
         adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower));
 
         turretMotor.setPower(adjustPower);

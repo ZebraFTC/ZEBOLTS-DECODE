@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -21,7 +20,7 @@ import android.util.Size;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "REAL CODE IGNORE OTHERS enoder", group = "TeleOp")
+@TeleOp(name = "TEST", group = "TeleOp")
 public class ZeboltsTeleOp extends LinearOpMode {
 
     // DRIVE MOTORS
@@ -32,7 +31,7 @@ public class ZeboltsTeleOp extends LinearOpMode {
 
     // SHOOTER MOTORS
     public DcMotor bottomshooter;
-    public DcMotorEx topshooter;
+    public DcMotor topshooter;
     public DcMotor intake;
 
     // SERVOS
@@ -138,7 +137,7 @@ public class ZeboltsTeleOp extends LinearOpMode {
      */
     private void initShooterSystem() {
         intake = hardwareMap.get(DcMotor.class, "intake");
-        topshooter = hardwareMap.get(DcMotorEx.class, "shooter 2");
+        topshooter = hardwareMap.get(DcMotor.class, "shooter 2");
         bottomshooter = hardwareMap.get(DcMotor.class, "shooter 1");
         hood = hardwareMap.get(Servo.class, "angle changer");
         transfer = hardwareMap.get(Servo.class, "transfer");
@@ -252,28 +251,28 @@ public class ZeboltsTeleOp extends LinearOpMode {
     private void handleShooter() {
         if (gamepad1.left_trigger > 0.1) {
             // Close range shot
-            topshooter.setVelocity(-1 * 2800 * 0.48);
-            bottomshooter.setPower(-1 * 0.48);
+            topshooter.setPower(-0.6);
+            bottomshooter.setPower(-0.6);
             hood.setPosition(0.95);
 
             powerLevel = "Low";
         } else if (gamepad1.left_bumper) {
             // Medium range shot
-            topshooter.setVelocity(-1 * 2800 * 0.55);
-            bottomshooter.setPower(-1 * 0.55);
-            hood.setPosition(0.85);///y
+            topshooter.setPower(-0.72);
+            bottomshooter.setPower(-0.72);
+            hood.setPosition(0.75);
 
             powerLevel = "Medium";
         } else if (gamepad1.right_bumper) {
-            topshooter.setVelocity(-1 * 2800 * 0.8);
-            bottomshooter.setPower(-1 * 0.8);
-            hood.setPosition(0.75);
+            topshooter.setPower(-0.92);
+            bottomshooter.setPower(-0.92);
+            hood.setPosition(0.73);
 
             powerLevel = "High";
         } else if (gamepad1.x) {
             // Stop shooter
             bottomshooter.setPower(0);
-            topshooter.setVelocity(0);
+            topshooter.setPower(0);
             hood.setPosition(0.95);
 
             powerLevel = "None";
@@ -292,8 +291,6 @@ public class ZeboltsTeleOp extends LinearOpMode {
     private void handleTransfer() {
         if (gamepad1.right_trigger > 0.1) {
             transfer.setPosition(0.85);
-            shootClose(500);
-            transfer.setPosition(1);
         } else {
             transfer.setPosition(1);
 
@@ -434,8 +431,8 @@ public class ZeboltsTeleOp extends LinearOpMode {
         }
 
         // Proportional control for smooth tracking
-        double adjustPower = bearing / 18.0;
-        adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower));
+        double adjustPower = bearing / 25.0;
+        adjustPower = Math.max(-TURRET_ALIGN_POWER, Math.min(TURRET_ALIGN_POWER, adjustPower)); //Limit turret speed
 
         turretMotor.setPower(adjustPower);
         telemetry.addData("Status", "Tracking...");

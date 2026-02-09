@@ -94,12 +94,12 @@ public class RedNearENCODER extends LinearOpMode {
         //drive(1200,1200,1200,1200,0.25); gate in
         //drive(-1200,-1200,-1200,-1200,0.4); gate out
         drive(750,-750,-750,750,0.4);
-        turnTurret(0.5,-140);
+        turnTurret(0.5,-135);
         shoot(0.49,1.5,0,1,0.95);
         shoot(0.49,2,1,0.85,0.95);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(30,30,-30,-30,0.25);
+        drive(40,40,-40,-40,0.25);
         drive(-1500,1500,1500,-1500,0.4);
 
         //SECTION 2: THE GATE OPENER
@@ -113,7 +113,7 @@ public class RedNearENCODER extends LinearOpMode {
         shooter(0);
         shoot(0,0.1,0,1,0.95);
         drive(30,30,-30,-30,0.25);
-        drive(-700,700,700,-700,0.4);
+        drive(-900,900,900,-900,0.4);
 
 
 
