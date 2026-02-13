@@ -260,7 +260,7 @@ public class ZeboltsTeleOpDecode extends LinearOpMode {
             // Medium range shot
             topshooter.setPower(-0.72);
             bottomshooter.setPower(-0.72);
-            hood.setPosition(0.75);
+            hood.setPosition(0.77);
 
             powerLevel = "Medium";
         } else if (gamepad1.right_bumper) {

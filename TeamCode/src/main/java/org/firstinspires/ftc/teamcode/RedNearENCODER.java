@@ -75,15 +75,14 @@ public class RedNearENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        shooter(0.54);
-        turnTurret(0.5,-125);
-        drive(-700,-700,-700,-700,0.4);
+        shooter(0.53);
+        turnTurret(0.5,-142);
+        drive(-600,-600,-600,-600,0.4);
         drive(-900,900,900,-900,0.4);
-        shoot(0.54,1.5,0,1,0.95);
-        shoot(0.54,2,1,0.85,0.95);
+        shoot(0.53,1.5,0,1,0.83);
+        shoot(0.53,2,1,0.85,0.83);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(35,35,-35,-35,0.25);
         drive(-800,800,800,-800,0.4);
 
         //SECTION 2: THE GATE OPENER
@@ -93,23 +92,24 @@ public class RedNearENCODER extends LinearOpMode {
         intake(0);
         //drive(1200,1200,1200,1200,0.25); gate in
         //drive(-1200,-1200,-1200,-1200,0.4); gate out
-        drive(750,-750,-750,750,0.4);
-        turnTurret(0.5,-135);
-        shoot(0.49,1.5,0,1,0.95);
-        shoot(0.49,2,1,0.85,0.95);
+        drive(700,-700,-700,700,0.4);
+        turnTurret(0.5,-118);
+        shoot(0.5,1.5,0,1,0.9);
+        shoot(0.5,2,1,0.85,0.9);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(40,40,-40,-40,0.25);
-        drive(-1500,1500,1500,-1500,0.4);
+        drive(-200,-200,-200,-200,0.25);
+        drive(30,30,-30,-30,0.25);
+        drive(-1530,1530,1530,-1530,0.4);
 
         //SECTION 2: THE GATE OPENER
         intake(1);
         drive(1250,1250,1250,1250,0.25);
         drive(-1200,-1200,-1200,-1200,0.4);
         intake(0);
-        drive(1500,-1500,-1500,1500,0.4);
-        shoot(0.48,1.5,0,1,0.95);
-        shoot(0.48,2,1,0.85,0.95);
+        drive(1450,-1450,-1450,1450,0.4);
+        shoot(0.5,1.5,0,1,0.9);
+        shoot(0.5,2,1,0.85,0.9);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
         drive(30,30,-30,-30,0.25);

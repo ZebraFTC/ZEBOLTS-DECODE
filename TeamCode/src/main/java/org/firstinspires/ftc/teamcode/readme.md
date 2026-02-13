@@ -1,5 +1,43 @@
 ## TeamCode Module
 
+shooter(0.54);
+turnTurret(0.5,132);
+drive(-600,-600,-600,-600,0.4);
+drive(900,-900,-900,900,0.4);
+shoot(0.54,1.5,0,1,0.95);
+shoot(0.54,2,1,0.85,0.95);
+shooter(0);
+shoot(0,0.1,0,1,0.95);
+drive(850,-850,-850,850,0.4);
+
+        intake(1);
+        drive(1500,1500,1500,1500,0.25);
+        drive(-900,-900,-900,-900,0.4);
+        intake(0);
+        //drive(1200,1200,1200,1200,0.25); gate in
+        //drive(-1200,-1200,-1200,-1200,0.4); gate out
+        drive(-850,850,850,-850,0.4);
+        turnTurret(0.5,155);
+        shoot(0.47,1.5,0,1,0.95);
+        shoot(0.47,2,1,0.85,0.95);
+        shooter(0);
+        shoot(0,0.1,0,1,0.95);
+        drive(1600,-1600,-1600,1600,0.4);
+
+        intake(1);
+        drive(1500,1500,1500,1500,0.25);
+        drive(-1350,-1350,-1350,-1350,0.4);
+        intake(0);
+        drive(100,100,-100,-100,0.4);
+
+        drive(-1600,1600,1600,-1600,0.4);
+        shoot(0.46,1.5,0,1,0.95);
+        shoot(0.46,2,1,0.85,0.95);
+        shooter(0);
+        shoot(0,0.1,0,1,0.95);
+        drive(900,-900,-900,900,0.4);
+
+
 Welcome!
 
 This module, TeamCode, is the place where you will write/paste the code for your team's

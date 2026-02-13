@@ -75,16 +75,14 @@ public class BlueNearENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        shooter(0.54);
-        turnTurret(0.5,132);
+        shooter(0.5);
+        turnTurret(0.5,142);
         drive(-600,-600,-600,-600,0.4);
-        drive(900,-900,-900,900,0.4);
-        shoot(0.54,1.5,0,1,0.95);
-        shoot(0.54,2,1,0.85,0.95);
+        shoot(0.5,1.5,0,1,0.95);
+        shoot(0.5,2,1,0.85,0.95);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
         drive(850,-850,-850,850,0.4);
-        drive(-30,-30,30,30,0.4);
 
         intake(1);
         drive(1500,1500,1500,1500,0.25);
@@ -92,13 +90,12 @@ public class BlueNearENCODER extends LinearOpMode {
         intake(0);
         //drive(1200,1200,1200,1200,0.25); gate in
         //drive(-1200,-1200,-1200,-1200,0.4); gate out
-        drive(-850,850,850,-850,0.4);
+        drive(-1000,850,850,-1000,0.4);
         turnTurret(0.5,155);
         shoot(0.47,1.5,0,1,0.95);
         shoot(0.47,2,1,0.85,0.95);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(-30,-30,30,30,0.4);
         drive(1600,-1600,-1600,1600,0.4);
 
         intake(1);
@@ -112,7 +109,6 @@ public class BlueNearENCODER extends LinearOpMode {
         shoot(0.46,2,1,0.85,0.95);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
-        drive(-30,-30,30,30,0.25);
         drive(900,-900,-900,900,0.4);
 
 
@@ -162,15 +158,10 @@ public class BlueNearENCODER extends LinearOpMode {
 
     //DRIVE FUNCTION
     private void drive(int leftBackTarget, int leftFrontTarget, int rightBackTarget, int rightFrontTarget, double speed) {
-        frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontleft.setTargetPosition(leftFrontTarget);
-        backleft.setTargetPosition(leftBackTarget);
-        frontright.setTargetPosition(rightFrontTarget);
-        backright.setTargetPosition(rightBackTarget);
+        leftBackPos += leftBackTarget;
+        leftFrontPos += leftFrontTarget;
+        rightBackPos += rightBackTarget;
+        rightFrontPos += rightFrontTarget;
 
 
         frontleft.setTargetPosition(leftFrontPos);
@@ -195,10 +186,8 @@ public class BlueNearENCODER extends LinearOpMode {
         backright.setPower(speed);
 
 
-        while (opModeIsActive() && frontleft.isBusy() || backleft.isBusy() || frontright.isBusy() || backright.isBusy()) {
+        while (opModeIsActive() && frontleft.isBusy() && backleft.isBusy() && frontright.isBusy() && backright.isBusy()) {
             idle();
-
-            sleep(50);
         }
     }
 
@@ -211,7 +200,6 @@ public class BlueNearENCODER extends LinearOpMode {
             topshooter.setVelocity(-1 * 2800 * shooterPower);
             ballBooter.setPosition(ballBooterPOS);
             hood.setPosition(hoodPOS);
-            sleep(75);
         }
     }
 
@@ -219,7 +207,6 @@ public class BlueNearENCODER extends LinearOpMode {
         turretPos += turretTarget;
         turretring.setTargetPosition(turretPos);
         turretring.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretring.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretring.setPower(turretSpeed);
 
         while (opModeIsActive() && turretring.isBusy()){

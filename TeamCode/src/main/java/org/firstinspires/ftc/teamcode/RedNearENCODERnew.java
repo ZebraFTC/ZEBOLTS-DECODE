@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous
-public class RedFarENCODER extends LinearOpMode {
+public class RedNearENCODERnew extends LinearOpMode {
     //DEFINING MOTORS
     public DcMotor frontleft; //Wheel
     public DcMotor frontright; //Wheel
@@ -75,35 +75,36 @@ public class RedFarENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        turnTurret(0.5,150);
-        shoot(0.85,4,0,1,0.73);
-        shoot(0.85,2,1,0.85,0.73);
-        shooter(0);
-        shoot(0,0.1,0,1,0.73);
-        drive(700,700,700,700,0.4);
-        drive(580,580,-580,-580,0.4);
+        shooter(0.47);
+        turnTurret(0.5,-1050);
+        drive(500,500,500,500,0.3);
+        shoot(0.47,1.5,0,1,0.95);
+        shoot(0.47,2,1,0.85,0.95);
+        shoot(0,0.1,0,1,0.95);
         intake(1);
-        shooter(0.84);
-        drive(1800,1800,1800,1800,0.3);
-        drive(-1300,-1300,-1300,-1300,0.4);
-        drive(-580,-580,580,580,0.4);
-        drive(-1100,-1100,-1100,-1100,0.3);
-        shoot(0.84,2,1,0.85,0.73);
-        shoot(0,0.1,0,1,0.73);
-        drive(1400,1400,1400,1400,0.4);
-        drive(577,577,-577,-577,0.4);
+        drive(200,200,200,200,0.2);
+        shooter(0.47);
+        drive(800,800,800,800,0.07);
+        drive(500,-500,-500,500,0.15);
+        drive(-350,350,350,-350,0.15);
+        intake(0);
+        drive(-1000,-1000,-1000,-1000,0.15);
+
+        shoot(0.47,0.5,1,1,0.95);
+        shoot(0.47,2,1,0.85,0.95);
+        shoot(0,0.1,0,1,0.95);
         intake(1);
-        shooter(0.83);
-        drive(1800,1800,1800,1800,0.3);
-        drive(-1500,-1500,-1500,-1500,0.4);
-        drive(-585,-585,585,585,0.4);
-        drive(-1500,-1500,-1500,-1500,0.4);
-        shoot(0.83,2,1,0.85,0.73);
-        shoot(0,0.1,0,1,0.73);
-        drive(900,900,900,900,0.4);
-
-
-
+        drive(780,780,800,800,0.3);
+        shooter(0.47);
+        drive(890,890,900,900,0.1);
+        intake(0);
+        drive(-1700,-1700,-1700,-1700,0.2);
+        shoot(0.47,0.5,1,1,0.95);
+        shoot(0.47,2,1,0.85,0.95);
+        shoot(0,0.1,0,1,0.95);
+        intake(1);
+        drive(1700,1700,1750,1750,0.3);
+        drive(600,600,600,600,0.1);
 
 
 
