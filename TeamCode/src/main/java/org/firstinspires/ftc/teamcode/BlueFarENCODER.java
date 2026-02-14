@@ -75,7 +75,7 @@ public class BlueFarENCODER extends LinearOpMode {
         waitForStart();
 
         //SECTION 1: SHOOTING PRELOADED BALLS
-        turnTurret(0.5,-165);
+        turnTurret(0.5,-150);
         shoot(0.79,4,0,1,0.75);
         shoot(0.79,2,1,0.85,0.75);
         shooter(0);
@@ -83,20 +83,25 @@ public class BlueFarENCODER extends LinearOpMode {
         drive(650,650,650,650,0.4);
         drive(-585,-585,585,585,0.4);
         intake(1);
+        shooter(0.795);
         drive(1800,1800,1800,1800,0.3);
-        drive(-1400,-1400,-1400,-1400,0.4);
+        drive(-1250,-1250,-1250,-1250,0.4);
         drive(570,570,-570,-570,0.4);
         drive(-1100,-1100,-1100,-1100,0.3);
-        shoot(0.795,4,0,1,0.75);
         shoot(0.795,2,1,0.85,0.75);
         shooter(0);
         shoot(0,0.1,0,1,0.75);
         drive(1400,1400,1400,1400,0.4);
         drive(-580,-580,580,580,0.4);
         intake(1);
+        shooter(0.87);
         drive(1800,1800,1800,1800,0.3);
-        drive(-1000,-1000,-1000,-1000,0.4);
-
+        drive(-1500,-1500,-1500,-1500,0.4);
+        drive(585,585,-585,-585,0.4);
+        drive(-1500,-1500,-1500,-1500,0.4);
+        shoot(0.87,2,1,0.85,0.73);
+        shoot(0,0.1,0,1,0.73);
+        drive(900,900,900,900,0.4);
 
 
 
