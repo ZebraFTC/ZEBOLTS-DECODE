@@ -76,7 +76,7 @@ public class BlueNearENCODER extends LinearOpMode {
 
         //SECTION 1: SHOOTING PRELOADED BALLS
         shooter(0.53);
-        turnTurret(0.5,160);
+        turnTurret(0.5,165);
         drive(-600,-600,-600,-600,0.4);
         drive(900,-900,-900,900,0.4);
         shoot(0.53,1.5,0,1,0.83);
@@ -92,9 +92,9 @@ public class BlueNearENCODER extends LinearOpMode {
         //drive(1200,1200,1200,1200,0.25); gate in
         //drive(-1200,-1200,-1200,-1200,0.4); gate out
         drive(-1000,850,850,-1000,0.4);
-        turnTurret(0.5,110);
-        shoot(0.51,1.5,0,1,0.9);
-        shoot(0.51,2,1,0.85,0.9);
+        turnTurret(0.5,95);
+        shoot(0.5,1.5,0,1,0.9);
+        shoot(0.5,2,1,0.85,0.9);
         shooter(0);
         shoot(0,0.1,0,1,0.95);
         drive(1850,-1850,-1850,1850,0.4);
