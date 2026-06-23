@@ -77,7 +77,6 @@ public class MecanumDrive extends OpMode {
         errorArm = armTarget - currentArmPos;
         armPower = errorArm * KP;
         armPower = Math.max(Math.abs(armPower), MIN_ARM_POWER) * Math.signum(armPower);
-        /
         if (Math.abs(errorArm) < ARM_TOLERANCE)
         {
             motorArm.setPower(0);
